@@ -1,7 +1,7 @@
-# io-console-starter-project
+# AdobeXD plugin to export artboards to xaml files
 ## Description
 
-This is the starter project to be available to developers who first create an XD plugin instance in [Adobe I/O Console](https://console.adobe.io/plugins).
+the initial focus will be on WinUI, but later Xamarin Forms, WPF will also be considered.
 
 ## License
 
