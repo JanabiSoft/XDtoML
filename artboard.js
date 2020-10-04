@@ -1,11 +1,14 @@
 let output = "<Page>";
-const {Rectangle, Ellipse} = require("scenegraph");
+const {Rectangle, Ellipse, Text} = require("scenegraph");
 
 
 
 function convertBoard(item) {
+    resetOutput();
     var children = item.children;
     console.log(item.name + "- selected");
+    console.log("output is :" + output);
+
 
     var tag = "";
 
@@ -17,16 +20,22 @@ function convertBoard(item) {
             output += "\n";
             
             if (element instanceof Rectangle) {
-                tag = "Rectangle";
+                tag = createtTag("Rectangle", element);
             }
             else if (element instanceof Ellipse){
-                tag = "Rectangle";
+                tag = createtTag("Ellipse", element);
             }
-            else if(element instanceof Text){ tag = createtTextBlock(element); }
+            else if(element instanceof Text){
+                console.log("item is text");
+                tag = createTextBlock(element); 
+            }
 
             output += tag;
 
+
         });
+        console.log(output);
+
     }
     else{
         console.log("item has no children");
@@ -61,15 +70,16 @@ function createtTag(tag, item){
 
 function getProperties(item) {
     var props = "Width=\"";
-    props += item.width + "\"";
+    props += item.Width + "\"";
     props += " ";
     props += "Height=\"";
-    props += item.height + "\"";
+    props += item.Height + "\"";
 
     return props;
 }
 
 function createTextBlock(item) {
+    console.log("creating textblock");
     var result = "";
     var ele = "";
     var props = "";
@@ -79,9 +89,13 @@ function createTextBlock(item) {
         ele = "<TextBlock";
         var props = getProperties(item);
         props += " FontSize=" + item.FontSize + "\"";
-        result = ele + " " + props + ">\n</"+ tag + ">";
+        result = ele + " " + props + ">\n</"+ item + ">";
         return result;
     }
+}
+
+function resetOutput() {
+    output = "<Page>\n";
 }
 
 module.exports = {
