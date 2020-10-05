@@ -1,5 +1,5 @@
 let output = "<Page>";
-const {Rectangle, Ellipse, Text} = require("scenegraph");
+const {Rectangle, Ellipse, Text, Polygon, Line, Color} = require("scenegraph");
 
 
 
@@ -16,21 +16,34 @@ function convertBoard(item) {
         console.log("item has many children");
         children.forEach(element => {
             console.log(element.name + "....");
+            //console.log(element);
 
-            output += "\n";
-            
+
+            //output += "\n";
+            //console.log("atg name : " + tagName);
+
             if (element instanceof Rectangle) {
-                tag = createtTag("Rectangle", element);
+                tag = createtShape("Rectangle", element);
             }
-            else if (element instanceof Ellipse){
-                tag = createtTag("Ellipse", element);
+            else if (element instanceof Ellipse) {
+                console.log(element);
+
+                tag = createtShape("Ellipse", element);
             }
-            else if(element instanceof Text){
-                console.log("item is text");
-                tag = createTextBlock(element); 
+            else if (element instanceof Polygon) {
+                tag = createtShape("Polygon", element);
+            }
+            else if (element instanceof Line) {
+                console.log(element);
+
+                tag = createtLine(element);
+            }
+            else if (element instanceof Text) {
+                tag = createTextBlock(element);
             }
 
-            output += tag;
+           
+            output += tag + "\n";
 
 
         });
@@ -40,21 +53,13 @@ function convertBoard(item) {
     else{
         console.log("item has no children");
 
-        if (item instanceof Rectangle) {
-            output += "\n";
-            output += createtTag("Rectangle", item);
-            }
-            else if (item instanceof Ellipse){
-                output += "\n";
-                output += createtTag("Ellipse", item);
-                }
     }
 
     return output += "\n</Page>";
 
 }
 
-function createtTag(tag, item){
+function createtShape(tag, item){
     var result = "";
     var ele = "";
     var props = "";
@@ -63,6 +68,8 @@ function createtTag(tag, item){
     if (item != null) {
         ele = "<" + tag;
         var props = getProperties(item);
+        props += " BorderBrush=\"" + item.stroke + "\"";
+        if(tag != "Line") props += " Fill=\"" + item.fill + "\"";
         result = ele + " " + props + ">\n</"+ tag + ">";
         return result;
     }
@@ -70,10 +77,10 @@ function createtTag(tag, item){
 
 function getProperties(item) {
     var props = "Width=\"";
-    props += item.Width + "\"";
+    props += item.width + "\"";
     props += " ";
     props += "Height=\"";
-    props += item.Height + "\"";
+    props += item.height + "\"";
 
     return props;
 }
@@ -87,9 +94,32 @@ function createTextBlock(item) {
 
     if (item != null) {
         ele = "<TextBlock";
-        var props = getProperties(item);
-        props += " FontSize=" + item.FontSize + "\"";
-        result = ele + " " + props + ">\n</"+ item + ">";
+        //var props = getProperties(item);
+        var props = " FontSize=" + item.fontSize + "\"";
+        result = ele + " " + props + ">\n</TextBlock>";
+        return result;
+    }
+}
+
+function createtLine(item) {
+    var result = "";
+    var ele = "";
+    var content = "";
+
+    if (item != null) {
+        var stroke = item.stroke.value.toString(16);
+        //var stroke = parseInt(hex, 16);
+        console.log(stroke);
+
+
+        ele = "<Line";
+        var props = "X1=\"" + item.start.x + " X2=\"" + item.end.x;
+        props += " Y1=\"" + item.start.y + " Y2=\"" + item.end.y;
+
+        props += " Stroke=\"#" + stroke + "\"";
+        props += " StrokeWidth=\"" + item.strokeWidth + "\"";
+
+        result = ele + " " + props + ">\n</Line>";
         return result;
     }
 }
