@@ -37,7 +37,7 @@ function convertArtboard(board) {
         console.log("board available");
         var item = board.items[0];
 
-        var result = convert(item);
+        var result = convertBoard(item);
         clipboard.copyText(result);
 
     }
