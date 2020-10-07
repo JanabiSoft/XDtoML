@@ -1,4 +1,5 @@
-const {Rectangle, Ellipse, Text, Polygon, Line, Color} = require("scenegraph");
+const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance} = require("scenegraph");
+const {CreateControl} = require("./controls.js")
 
 function convertBoard(item) {
     //resetOutput();
@@ -11,31 +12,33 @@ function convertBoard(item) {
     var tag = "";
 
     if(children.length > 1) {
+
         console.log("item has many children");
         children.forEach(element => {
             console.log(element.name + "....");
-            //console.log(element);
-
-
-            //output += "\n";
-            //console.log("atg name : " + tagName);
 
             if (element instanceof Rectangle) {
                 tag = createtShape("Rectangle", element);
             }
             else if (element instanceof Ellipse) {
-                console.log(element);
+                //console.log(element);
                 tag = createtShape("Ellipse", element);
             }
             else if (element instanceof Polygon) {
                 tag = createtShape("Polygon", element);
             }
             else if (element instanceof Line) {
-                console.log(element);
                 tag = createtShape("Line", element);
             }
             else if (element instanceof Text) {
                 tag = createTextBlock(element);
+            }
+            else if (element instanceof SymbolInstance) {
+                console.log(element);
+                tag = CreateControl(element);
+            }
+            else{
+                //console.log(element);
             }
           
             output += tag + "\n";
@@ -48,7 +51,6 @@ function convertBoard(item) {
     }
 
     return output += "\n\t</Grid>\n</Page>";
-
 }
 
 function createtShape(tag, item){
@@ -60,9 +62,6 @@ function createtShape(tag, item){
     if (item != null) {
         var stroke = item.stroke.value.toString(16);
         var fill = item.fill != null ? item.fill.value.toString(16) : undefined;
-        // var x = item.globalDrawBounds.x;
-        // var y = item.globalDrawBounds.y;
-        //var margin = x.toString() +","+ y.toString() + ",0,0";
         var margin = getMargin(item);
     
         var props = " ";
