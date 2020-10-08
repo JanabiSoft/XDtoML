@@ -34,7 +34,7 @@ function convertBoard(item) {
                 tag = createTextBlock(element);
             }
             else if (element instanceof SymbolInstance) {
-                console.log(element);
+                //console.log(element);
                 tag = CreateControl(element);
             }
             else{
@@ -44,7 +44,7 @@ function convertBoard(item) {
             output += tag + "\n";
 
         });
-        console.log(output);
+        //console.log(output);
     }
     else{
         console.log("item has no children");
@@ -83,7 +83,6 @@ function createtShape(tag, item){
                 props += "X1=\"" + item.start.x+ "\"" + " X2=\"" + item.end.x+ "\"";
                 props += " Y1=\"" + item.start.y+ "\"" + " Y2=\"" + item.end.y+ "\"";
                     break;
-                            
             default:
                 break;
         }
