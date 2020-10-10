@@ -1,6 +1,5 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon} = require("scenegraph");
 
-
 function createControl(item) {
 
     if (item != null) {
@@ -13,14 +12,16 @@ function createControl(item) {
         var width = item.globalDrawBounds.width;
         var height = item.globalDrawBounds.height;
 
-
         // general properties
         ele = "\t\t<" + type;
         generalProps += "Width=\"" + width + "\"";
         generalProps += " Height=\"" + height + "\"";
         generalProps += " Margin=\"" + margin + "\"";
 
-        
+        if (type == "RatingControl") {
+            ele + " " + generalProps + "/>";
+        }
+
         //specific proeprties
         var children = item.children;
         var result = "";
@@ -98,6 +99,8 @@ function getControlType(item) {
     else if(name.includes("RadioButton") || name.includes("Radio Button")) return "RadioButton";
     else if(name.includes("TextBox") || name.includes("Text Box")) return "TextBox";
     else if(name.includes("CombotBox") || name.includes("Combo Box")) return "ComboBox";
+    else if(name.includes("Rating")) return "RatingControl";
+
 }
 
 function getControlTextProperties(tag, item) {
