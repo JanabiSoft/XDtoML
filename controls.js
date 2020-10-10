@@ -96,11 +96,11 @@ function getControlType(item) {
     else if(name.includes("CheckBox") || name.includes("Check Box")) return "CheckBox";
     else if(name.includes("RadioButton") || name.includes("Radio Button")) return "RadioButton";
     else if(name.includes("TextBox") || name.includes("Text Box")) return "TextBox";
-
+    else if(name.includes("CombotBox") || name.includes("Combo Box")) return "ComboBox";
 }
 
 function getControlTextProperties(tag, item) {
-    //console.log("getting text property of: " + tag);
+    console.log("getting text property of: " + tag);
     var prop = "";
     //console.log(prop);
     var txt = item.text;
@@ -110,8 +110,12 @@ function getControlTextProperties(tag, item) {
     else if (txt.includes("Hint") || txt.includes("placeholder")) {
         prop += " PlaceholderText=\"" + txt + "\"";
     }
+    else if (tag == "ComboBox") {
+        prop += " PlaceholderText=\"" + txt + "\"";
+    }
     else {
-        prop += " Content=\"" + txt + "\"";
+    console.log(prop);
+    prop += " Content=\"" + txt + "\"";
         prop += " Foreground=\"#" + item.fill.value.toString(16) + "\"";
         prop += " FontSize=\"" + item.fontSize + "\"";
     }
