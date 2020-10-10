@@ -32,7 +32,7 @@ function createControl(item) {
             children.forEach(element => {
    
                 if (element instanceof Rectangle) {
-                    specificProps += createtShape("Rectangle", element);
+                    specificProps += getControlShapeProperties("Rectangle", element);
                 }
                 else if (element instanceof Ellipse) {
                     //console.log(element);
@@ -92,7 +92,8 @@ function createControl(item) {
 
 function getControlType(item) {
     var name = item.name;
-    if(name.includes("Button") && !name.includes("Radio")) return "Button";
+    if(name.includes("HyperlinkButton") || name.includes("Hyperlink Button")) return "HyperlinkButton";
+    else if(name.includes("Button") && !name.includes("Radio")) return "Button";
     else if(name.includes("CheckBox") || name.includes("Check Box")) return "CheckBox";
     else if(name.includes("RadioButton") || name.includes("Radio Button")) return "RadioButton";
     else if(name.includes("TextBox") || name.includes("Text Box")) return "TextBox";
@@ -114,8 +115,8 @@ function getControlTextProperties(tag, item) {
         prop += " PlaceholderText=\"" + txt + "\"";
     }
     else {
-    console.log(prop);
-    prop += " Content=\"" + txt + "\"";
+        console.log(prop);
+        prop += " Content=\"" + txt + "\"";
         prop += " Foreground=\"#" + item.fill.value.toString(16) + "\"";
         prop += " FontSize=\"" + item.fontSize + "\"";
     }
@@ -133,6 +134,13 @@ function getControlTextProperties(tag, item) {
         default:
             return "";
     }
+}
+
+function getControlShapeProperties(item) {
+    console.log("getting shapes property of: " +item.name);
+
+    //hyperlink button
+    return "";
 }
 
 
