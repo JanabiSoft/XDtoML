@@ -1,4 +1,4 @@
-const {Path, Text, Rectangle, Ellipse, Line, Polygon} = require("scenegraph");
+const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
 
 function createControl(item) {
 
@@ -24,14 +24,17 @@ function createControl(item) {
 
         //specific proeprties
         var children = item.children;
+        console.log(children.length);
+
         var result = "";
         var specificProps = "";
 
         //console.log("general properties retireved" + generalProps);
 
         if(children.length > 1) {
-            children.forEach(element => {
-   
+            children.forEach(function (element, i) {
+                //console.log("Child " + i + " is a " + element.constructor.name);
+                
                 if (element instanceof Rectangle) {
                     specificProps += getControlShapeProperties("Rectangle", element);
                 }
@@ -53,11 +56,16 @@ function createControl(item) {
                 else if (element instanceof Path) {
                     //console.log("Path:" + element.name);
                     if (element.name != "Footprint") {
-                        specificProps += " Background=\"#" + element.fill.value.toString(16) + "\"";
-                        //console.log("Path:" + specificProps);
-
+                        //specificProps += " Background=\"#" + element.fill.value.toString(16) + "\"";
+                        specificProps += getControlPathProperties(element, type);
+                        console.log(element.name + " : " + specificProps);
                     }
                 }
+                else if (element instanceof Group) {
+                    specificProps += getControlPropertiesFromGroup(element, type);
+                    console.log("Group proeprties retrieved: prop= " + specificProps);
+                }
+
               
                 //props += prop;
                 //console.log(props);
@@ -100,7 +108,7 @@ function getControlType(item) {
     else if(name.includes("TextBox") || name.includes("Text Box")) return "TextBox";
     else if(name.includes("CombotBox") || name.includes("Combo Box")) return "ComboBox";
     else if(name.includes("Rating")) return "RatingControl";
-
+    else if(name.includes("Slider")) return "Slider";
 }
 
 function getControlTextProperties(tag, item) {
@@ -144,6 +152,38 @@ function getControlShapeProperties(item) {
 
     //hyperlink button
     return "";
+}
+
+function getControlPathProperties(item, tag) {
+    var prop = "";
+    //console.log(prop);
+    var pathName = item.name;
+    console.log(pathName);
+
+    if(pathName.includes("Base")) prop += " Background=\"#" + item.fill.value.toString(16) + "\"";
+    else if(pathName.includes("Indicator")) prop += " Foreground=\"#" + item.fill.value.toString(16) + "\"";
+    else if(pathName.includes("Track")) prop += " Background=\"#" + item.fill.value.toString(16) + "\"";
+
+    return prop;
+
+}
+
+function getControlPropertiesFromGroup(item, tag) {
+    //slider
+    var props = "";
+    item.children.forEach(ele => {
+        if (ele instanceof Path) {
+            //console.log("Path:" + ele.name);
+            if (ele.name != "Footprint") {
+                //specificProps += " Background=\"#" + ele.fill.value.toString(16) + "\"";
+                props += getControlPathProperties(ele, tag);
+                console.log(ele.name + " : " + props);
+            }
+        }
+    });
+    
+    return props;
+
 }
 
 
