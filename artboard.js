@@ -7,7 +7,14 @@ function convertBoard(item) {
     console.log(item.name + "- selected");
     console.log("output is :" + output);
 
-    var output = "<Page>\n\t<Grid>\n";
+    var page = "<Page";
+    page += " xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"";
+    page += "\n\txmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"";
+    page += "\n\txmlns:d=\"http://schemas.microsoft.com/expression/blend/2008\"";
+    page += "\n\txmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"";
+    page += "\n\tmc:Ignorable=\"d\">\n\t<Grid>\n";
+
+    var output = page;
 
     var tag = "";
 
@@ -93,7 +100,7 @@ function createtShape(tag, item){
         if(fill != undefined) props += " Fill=\"#" + fill + "\"";
 
         ele = "\t\t<" + tag;
-        result = ele + " " + props + "/>";
+        result = ele + " " + props + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" />";
         return result;
     }
 }

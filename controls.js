@@ -76,7 +76,7 @@ function createControl(item) {
         }
     
     
-        result = ele + " " + generalProps + specificProps + "/>";
+        result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" />";
         //console.log(result);
         //console.log(specificProps);
 
