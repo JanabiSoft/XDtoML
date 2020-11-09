@@ -1,19 +1,24 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
+const {CreateShape} = require("./Shape.js")
+
 
 function createControl(item) {
 
     if (item != null) {
         var type = getControlType(item);
-        console.log("creating " + type);
+        console.log("creating Control: " + type);
         var result = "";
         var ele = "";
         var generalProps = " ";
-        var margin = getMargin(item);
+        //var margin = getMargin(item);
+        var  margin = "0";
+        if(item.parent instanceof Group) margin = getRelativeMargin(item);
         var width = item.globalDrawBounds.width;
         var height = item.globalDrawBounds.height;
 
         // general properties
-        ele = "\t\t<" + type;
+        console.log("generating Control general properties");
+        ele = "\t\t<" + type + " Name=\"" + item.name + "\"";
         generalProps += "Width=\"" + width + "\"";
         generalProps += " Height=\"" + height + "\"";
         generalProps += " Margin=\"" + margin + "\"";
@@ -22,61 +27,137 @@ function createControl(item) {
             ele + " " + generalProps + "/>";
         }
 
-        //specific proeprties
-        var children = item.children;
-        console.log(children.length);
 
+        //console.log("general properties retireved" + generalProps);
         var result = "";
         var specificProps = "";
 
-        //console.log("general properties retireved" + generalProps);
 
-        if(children.length > 1) {
-            children.forEach(function (element, i) {
-                //console.log("Child " + i + " is a " + element.constructor.name);
-                
-                if (element instanceof Rectangle) {
-                    specificProps += getControlShapeProperties("Rectangle", element);
-                }
-                else if (element instanceof Ellipse) {
-                    //console.log(element);
-                    specificProps += createtShape("Ellipse", element);
-                }
-                else if (element instanceof Polygon) {
-                    specificProps += createtShape("Polygon", element);
-                }
-                else if (element instanceof Line) {
-                    //console.log(element);
-                    specificProps += createtShape("Line", element);
-                }
-                else if (element instanceof Text) {
-                    specificProps += getControlTextProperties(type, element);
-                    //console.log("text proeprties retrieved: prop= " + specificProps);
-                }
-                else if (element instanceof Path) {
-                    //console.log("Path:" + element.name);
-                    if (element.name != "Footprint") {
-                        //specificProps += " Background=\"#" + element.fill.value.toString(16) + "\"";
-                        specificProps += getControlPathProperties(element, type);
-                        console.log(element.name + " : " + specificProps);
+        if (IsLayout(type)) {
+            console.log(" generating specific proeprties and content for Layout: " + item.name);
+
+            result = ele + ">";
+            var children = item.children;
+            var content = "\n";
+            if(children.length > 1) {
+                children.forEach(function (element, i) {
+                    console.log("Layout Child Control" + i + " : " + element.constructor.name);
+                    
+                    if (element instanceof Rectangle) {
+                        content += CreateShape("Rectangle", element);
                     }
-                }
-                else if (element instanceof Group) {
-                    specificProps += getControlPropertiesFromGroup(element, type);
-                    console.log("Group proeprties retrieved: prop= " + specificProps);
-                }
-             
-                //console.log(props);
-            });
-            //console.log("iteraing throug hchildren finished:" + specificProps);
+                    else if (element instanceof Ellipse) {
+                        //console.log(element);
+                        content += CreateShape("Ellipse", element);
+                    }
+                    else if (element instanceof Polygon) {
+                        content += CreateShape("Polygon", element);
+                    }
+                    else if (element instanceof Line) {
+                        //console.log(element);
+                        content += CreateShape("Line", element);
+                    }
+                    else if (element instanceof Text) {
+                        content += createTextBlock(element);
+                        //console.log("text proeprties retrieved: prop= " + specificProps);
+                    }
+                    else if (element instanceof Path) {
+                        //console.log("Path:" + element.name);
+                        if (element.name != "Footprint") {
+                            //specificProps += " Background=\"#" + element.fill.value.toString(16) + "\"";
+                            content += getControlPathProperties(element, type);
+                            console.log(element.name + " : " + content);
+                        }
+                    }
+                    else if (element instanceof Group) {
+                        specificProps += getControlPropertiesFromGroup(element, type);
+                        console.log("Group proeprties retrieved: prop= " + specificProps);
+                    }
+                 
+                    //console.log(props);
+                });
+                //console.log("iteraing throug hchildren finished:" + specificProps);
+    
+            }
+            else{
+                //console.log("item has no children");
+            }
+          
+            
+            result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" >";
+            result += content + "\n\t</" + type + ">\n";
+
+        } 
+        else if (isGroupControl(type)){
+            //getting specific proeprties
+            //result = getControlSpecificProperties(item);
+            console.log(" generating specific proeprties and content for GroupControl: " + type + " : " + item.name);
+            var specificProps = getControlSpecificProperties(type, item);
+            
+            console.log(" generating content of GroupControl: " + item.name);
+            var content = getControlChildren(item);
+
+            result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" >";
+            result += content + "\n\t</" + type + ">"
+
+       
+        }
+        else {
+            //getting specific proeprties
+            console.log("generating Specific properties for control: " + item.name);
+
+            var children = item.children;
+            console.log(children.length);
+
+            if(children.length > 1) {
+                children.forEach(function (element, i) {
+                    console.log("Control Child " + i + " is a " + element.constructor.name);
+                    
+                    if (element instanceof Rectangle && element.name != "Footprint") {
+                        specificProps += CreateShape("Rectangle", element);
+                    }
+                    else if (element instanceof Ellipse) {
+                        //console.log(element);
+                        specificProps += CreateShape("Ellipse", element);
+                    }
+                    else if (element instanceof Polygon) {
+                        specificProps += CreateShape("Polygon", element);
+                    }
+                    else if (element instanceof Line) {
+                        //console.log(element);
+                        specificProps += CreateShape("Line", element);
+                    }
+                    else if (element instanceof Text) {
+                        specificProps += getControlTextProperties(type, element);
+                        //console.log("text proeprties retrieved: prop= " + specificProps);
+                    }
+                    else if (element instanceof Path) {
+                        //console.log("Path:" + element.name);
+                        if (element.name != "Footprint") {
+                            //specificProps += " Background=\"#" + element.fill.value.toString(16) + "\"";
+                            specificProps += getControlPathProperties(element, type);
+                            console.log(element.name + " : " + specificProps);
+                        }
+                    }
+                    else if (element instanceof Group) {
+                        specificProps += getControlPropertiesFromGroup(element, type);
+                        console.log("Group proeprties retrieved: prop= " + specificProps);
+                    }
+                 
+                    //console.log(props);
+                });
+                //console.log("iteraing throug hchildren finished:" + specificProps);
+    
+            }
+            else{
+                //console.log("item has no children");
+            }
+            result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" />";
 
         }
-        else{
-            //console.log("item has no children");
-        }
+
     
     
-        result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" />";
         //console.log(result);
         //console.log(specificProps);
 
@@ -89,12 +170,14 @@ function getControlType(item) {
     if(name.includes("HyperlinkButton") || name.includes("Hyperlink Button")) return "HyperlinkButton";
     else if(name.includes("Button") && !name.includes("Radio")) return "Button";
     else if(name.includes("CheckBox") || name.includes("Check Box")) return "CheckBox";
-    else if(name.includes("RadioButton") || name.includes("Radio Button")) return "RadioButton";
+    else if(name.includes("RadioButtons") || name.includes("Radio Button") && !name.includes("Group")) return "RadioButton";
+    else if(name.includes("RadioButtonGroup") || name.includes("Radio Button Group")) return "RadioButtons";
     else if(name.includes("TextBox") || name.includes("Text Box")) return "TextBox";
     else if(name.includes("CombotBox") || name.includes("Combo Box")) return "ComboBox";
     else if(name.includes("Rating")) return "RatingControl";
     else if(name.includes("Slider")) return "Slider";
     else if(name.includes("ToggleSwitch") || name.includes("Switch") || name.includes("Toggle Switch")) return "ToggleSwitch";
+    else return "Grid";
 
 }
 
@@ -129,12 +212,12 @@ function getControlTextProperties(tag, item) {
     return prop;
 }
 
-function getControlShapeProperties(item) {
-    console.log("getting shapes property of: " +item.name);
+// function getControlShapeProperties(item) {
+//     console.log("getting shapes property of: " +item.name);
 
-    //hyperlink button
-    return "";
-}
+//     //hyperlink button
+//     return "";
+// }
 
 function getControlPathProperties(item, tag) {
     var prop = "";
@@ -145,9 +228,8 @@ function getControlPathProperties(item, tag) {
     if(pathName.includes("Base")) prop += " Background=\"#" + item.fill.value.toString(16) + "\"";
     else if(pathName.includes("Indicator")) prop += " Foreground=\"#" + item.fill.value.toString(16) + "\"";
     else if(pathName.includes("Track")) prop += " Background=\"#" + item.fill.value.toString(16) + "\"";
+    else if(pathName.includes("Outer Ellipse")) prop += "";
     //else if(pathName.includes("Toggle")) prop += " Background=\"#" + item.fill.value.toString(16) + "\"";
-
-
     return prop;
 
 }
@@ -172,14 +254,139 @@ function getControlPropertiesFromGroup(item, tag) {
 
 }
 
+function IsLayout(type) {
+    if (type == "Grid") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function isGroupControl(type) {
+    if (type == "RadioButtons") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+function createTextBlock(item) {
+    console.log("creating textblock: " + item.name);
+    // var tag = item.tag;
+    // var prop = "";
+    var txt = item.text;
+
+    //var type = getControlType(item);
+    //console.log("creating Control: " + type);
+    var result = "";
+    var generalProps = " ";
+    var  margin = "";
+    if(item.parent instanceof Group) margin = getRelativeMargin(item);
+    else margin = getMargin(item);
+
+    var width = item.globalDrawBounds.width;
+    var height = item.globalDrawBounds.height;
+
+    //create element tag
+    var ele = "\t\t\t<TextBlock Name=\"" + item.name + "\"";
+
+
+    // general properties
+    console.log("generating TextBlock general properties");
+    generalProps += "Width=\"" + width + "\"";
+    generalProps += " Height=\"" + height + "\"";
+    generalProps += " Margin=\"" + margin + "\"";
+
+    //specific properties
+    var specificProps = "";
+
+    console.log(specificProps);
+    specificProps += " Text=\"" + txt + "\"";
+    specificProps += " Foreground=\"#" + item.fill.value.toString(16) + "\"";
+    specificProps += " FontSize=\"" + item.fontSize + "\"";
+
+    console.log(specificProps);
+
+    //finishing control
+    result = ele + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" />";
+
+    return result;
+}
+
+function getControlSpecificProperties(type, item) {
+            //getting specific proeprties
+            console.log("generating Control Specific properties for "+ type + " : " + item.name);
+
+            var children = item.children;
+            var props = "";
+
+            if(children.length > 1) {
+                children.forEach(function (element, i) {
+                    if (element instanceof Text && type != "RadioButtons") {
+                        props += getControlTextProperties(type, element);
+                    }
+                });
+            }
+            else{
+                //console.log("item has no children");
+            }
+            return props;
+}
+
+function getControlChildren(item) {
+    console.log("getting chilren of control: " + item.name)
+    var result = "\n";
+    var children = item.children;
+    var content = "\n";
+    if(children.length > 1) {
+        children.forEach(function (element, i) {
+            console.log("Control Child: " + i + " : " + element.constructor.name);
+            
+            if (element instanceof Group) {
+                result += createControl(element);
+                //specificProps += getControlPropertiesFromGroup(element, type);
+                //console.log("Group proeprties retrieved: prop= " + specificProps);
+            }
+         
+            //console.log(props);
+        });
+        //console.log("iteraing throug hchildren finished:" + specificProps);
+
+    }
+    else{
+        //console.log("item has no children");
+    }
+    return result;
+  
+    
+    // result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" >";
+    // result += content + "\n\t</" + type + ">\n";
+}
+
 
 function getMargin(item) {
-    var x = item.globalDrawBounds.x;
-    var y = item.globalDrawBounds.y;
+    var x = item.localBounds.x;
+    var y = item.localBounds.y;
+    console.log("margins of " + item.name + " is " + x + "," + y);
+
     return x.toString() +","+ y.toString() + ",0,0";
 }
 
+function getRelativeMargin(item) {
+    var parentX = item.parent.localBounds.x;
+    var parentY = item.parent.localBounds.y;
+    var x = item.boundsInParent.x - parentX;
+    var y = item.boundsInParent.y - parentY;
+    
+    console.log("margins of Layout:" + item.name + " is " + x + "," + y);
+
+    return x.toString() +","+ y.toString() + ",0,0";
+}
+
+
 module.exports = {
     CreateControl: createControl,
+    CreateTextBlock: createTextBlock
 };
 
