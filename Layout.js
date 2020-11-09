@@ -18,7 +18,7 @@ function createLayout(item) {
 
         // general properties
         console.log("generating Layout general properties");
-        ele = "\t\t<" + type + " Name=\"" + item.name + "\"";
+        ele = "<" + type + " Name=\"" + item.name + "\"";
         generalProps += "Width=\"" + width + "\"";
         generalProps += " Height=\"" + height + "\"";
         generalProps += " Margin=\"" + margin + "\"";
@@ -45,10 +45,10 @@ function createLayout(item) {
                 }
                 else if (element instanceof Line) {
                     //console.log(element);
-                    content += CreateShape("Line", element);
+                    content += "\t\t\t" + CreateShape("Line", element);
                 }
                 else if (element instanceof Text) {
-                    content += CreateTextBlock(element);
+                    content += "\t\t\t" + CreateTextBlock(element);
                 }
                 else if (element instanceof Path) {
                     //console.log("Path:" + element.name);
@@ -77,7 +77,7 @@ function createLayout(item) {
         }
         
         result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" >";
-        result += content + "\n\t</" + type + ">"
+        result += content + "\n\t\t</" + type + ">"
   
     
         //console.log(result);

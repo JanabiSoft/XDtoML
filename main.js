@@ -11,7 +11,7 @@
 let clipboard = require("clipboard");
 // let output = "";
 const { convertBoard } = require("./artboard");
-const { convert } = require("./selection");
+const { Convert } = require("./selection");
 
 
 //main function
@@ -23,7 +23,7 @@ function convertSelection(selection) {
         console.log("selection available");
         var item = selection.items[0];
 
-        var result = convert(item);
+        var result = Convert(item);
         clipboard.copyText(result);
 
     }
@@ -46,7 +46,7 @@ function convertArtboard(board) {
 
 module.exports = {
     commands: {
-        convertSelection: convertSelection, 
-        convertArtboard: convertArtboard
+        ConvertSelection: convertSelection, 
+        ConvertArtboard: convertArtboard
     }
 };

@@ -17,12 +17,12 @@
   "uiEntryPoints" : [ {
     "type" : "menu",
     "label" : "Convert Selection",
-    "commandId" : "convertSelection"
+    "commandId" : "ConvertSelection"
   },
   {
     "type" : "menu",
     "label" : "Convert Artboard",
-    "commandId" : "convertArtboard"
+    "commandId" : "ConvertArtboard"
   } ],
   "version" : "0.1.0"
 }

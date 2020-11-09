@@ -62,7 +62,7 @@ function createShape(tag, item){
         if(stroke != undefined) props += " Stroke=\"#" + stroke + "\"";
         if(fill != undefined) props += " Fill=\"#" + fill + "\"";
 
-        ele = "\n\t\t<" + tag;
+        ele = "<" + tag;
         result = ele + " " + props + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" />";
         return result;
     }
