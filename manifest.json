@@ -1,5 +1,5 @@
 {
-  "name" : "XD to XAML",
+  "name" : "XD to ML",
   "host" : {
     "app" : "XD",
     "minVersion" : "21.0"
@@ -23,6 +23,11 @@
     "type" : "menu",
     "label" : "Convert Artboard",
     "commandId" : "ConvertArtboard"
-  } ],
+  },
+  {
+    "type" : "menu",
+    "label" : "Convert HTML",
+    "commandId" : "ConvertHTML"
+  }],
   "version" : "0.1.0"
 }

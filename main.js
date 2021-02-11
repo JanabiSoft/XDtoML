@@ -12,6 +12,8 @@ let clipboard = require("clipboard");
 // let output = "";
 const { convertBoard } = require("./artboard");
 const { Convert } = require("./selection");
+const { ConvertHTML } = require("./HTML");
+
 
 
 //main function
@@ -20,7 +22,7 @@ function convertSelection(selection) {
     console.log("conversion initiated");
 
     if (selection) {
-        console.log("selection available");
+        //console.log("selection available");
         var item = selection.items[0];
 
         var result = Convert(item);
@@ -28,7 +30,6 @@ function convertSelection(selection) {
 
     }
 }
-
 
 function convertArtboard(board) {
     console.log("conversion initiated");
@@ -43,10 +44,32 @@ function convertArtboard(board) {
     }
 }
 
+function convertHtml(selection) { 
+
+    console.log("HTML conversion initiated");
+
+    initializePluginData();
+
+    if (selection) {
+        //console.log("selection available");
+        var item = selection.items[0];
+
+        var result = ConvertHTML(item);
+        clipboard.copyText(result);
+    }
+}
+
+function initializePluginData() {
+    var cfk = window.localStorage.getItem("component_framework");
+    if (cfk == null) window.localStorage.setItem("component_framework", "blazorise");
+}
+
+
 
 module.exports = {
     commands: {
         ConvertSelection: convertSelection, 
-        ConvertArtboard: convertArtboard
+        ConvertArtboard: convertArtboard,
+        ConvertHTML: convertHtml
     }
 };

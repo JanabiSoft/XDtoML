@@ -106,6 +106,9 @@ function createElement(element) {
     else if (element instanceof Line) {
         return CreateShape("Line", element);
     }
+    else if (element instanceof Text && element.name.includes("Hyperlink")) {
+        return CreateControl(element);
+    }
     else if (element instanceof Text) {
         return CreateTextBlock(element);
     }

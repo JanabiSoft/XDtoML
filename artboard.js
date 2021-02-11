@@ -6,7 +6,6 @@ const {CreateShape} = require("./Shape.js")
 const {CreateLayout} = require("./Layout.js")
 
 
-
 function convertBoard(item) {
     //resetOutput();
     var children = item.children;
