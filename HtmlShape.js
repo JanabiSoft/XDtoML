@@ -1,7 +1,6 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
 
 function createShape(tag, item){
-    //console.log("Creating: " + tag + ": " + item.name );
     var result = "";
     var ele = "";
     var props = "";
@@ -81,11 +80,13 @@ function createShape(tag, item){
 
         //props += " stroke-width:" + item.storkeWidth;
 
-        if (tag != "line") svgStyle += getMargin(item);
+        //if (tag != "line") svgStyle += getMargin(item);
+        svgStyle += getMargin(item);
 
         if(stroke != undefined){
             eleStyle += " stroke: #" + stroke + ";";
-            if(item.storkeWidth != undefined) eleStyle += "stroke-width:"+ item.storkeWidth.toString() + ";";
+            if(item.storkeWidth != undefined) eleStyle += "stroke-width:"+ item.storkeWidth + "px;";
+            else eleStyle += "stroke-width:1px;";
         } 
         if(fill != undefined && tag != "line") eleStyle += " fill: #" + fill + ";";
 
@@ -95,7 +96,8 @@ function createShape(tag, item){
 
 
         ele = "\t\t<" + tag;
-        result = svgStart + " " + svgStyle + ">\n" + ele + " " + props + " " + eleStyle + "/>\n" + svgEnd;
+        if(tag == "polygon") result = svgStart + " " + svgStyle + ">\n@*" + ele + " " + props + " " + eleStyle + "/>*@\n" + svgEnd;
+        else result = svgStart + " " + svgStyle + ">\n" + ele + " " + props + " " + eleStyle + "/>\n" + svgEnd;
         return result;
     }
 }

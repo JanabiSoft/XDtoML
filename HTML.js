@@ -1,21 +1,18 @@
 let output = "";
 const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path, Artboard} = require("scenegraph");
-const {CreateControl} = require("./HtmlControl.js")
-const {CreateTextBlock} = require("./HtmlControl.js")
+const {CreateControl} = require("./HtmlControl.js");
+const {CreateTextBlock} = require("./HtmlControl.js");
 
-const {CreateShape} = require("./HtmlShape.js")
+const {CreateShape} = require("./HtmlShape.js");
 const {CreateLayout} = require("./HtmlLayout.js");
 const artboard = require("./artboard.js");
 const {CreateBlazorise} = require("./blazorise.js");
 
 let lastTab = 0;
 
-
-
 function convert(selection) {
-    var type = getElementType();
+    //var type = getElementType();
     var children = selection.children;
-    console.log(type + " : " + selection.name + "- selected");
     var page = "";
 
     if(selection instanceof Artboard){
@@ -31,18 +28,14 @@ function convert(selection) {
     var tag = "";
 
     if(children.length > 1) {
-        //console.log("item has many children: " + children.length);
         children.forEach(item => {
-            //console.log(item.name + "....");
             tab = getTabPosition(4);
             tag = createElement(item);
          
             output += "\n" + tab + tag;
-
         });
     }
     else{
-        //console.log("element has no children");
 
         output += "\n" + createElement(selection) + "\n";
     }
@@ -65,38 +58,36 @@ function getProperties(item) {
     return props;
 }
 
-function getElementType(element) {
-    if (element instanceof Rectangle) {
-        return "rect";
-    }
-    else if (element instanceof Ellipse) {
-        return "ellipse ";
-    }
-    else if (element instanceof Polygon) {
-        return "polygon";
-    }
-    else if (element instanceof Line) {
-        return "line";
-    }
-    else if (element instanceof Text) {
-        return "Text";
-    }
-    else if (element instanceof Path) {
-        return "Path";
-    }
-    else if (element instanceof Group) {
-        return "Group";
-    }
+// function getElementType(element) {
+//     if (element instanceof Rectangle) {
+//         return "rect";
+//     }
+//     else if (element instanceof Ellipse) {
+//         return "ellipse ";
+//     }
+//     else if (element instanceof Polygon) {
+//         return "polygon";
+//     }
+//     else if (element instanceof Line) {
+//         return "line";
+//     }
+//     else if (element instanceof Text) {
+//         return "Text";
+//     }
+//     else if (element instanceof Path) {
+//         return "Path";
+//     }
+//     else if (element instanceof Group) {
+//         return "Group";
+//     }
 
-}
+// }
 
 function createElement(element) {
-    if(element.name.includes("Text Box")) console.log("creating element" + element.name);
         
     if (element instanceof Rectangle) return CreateShape("rect", element);
         
     else if (element instanceof Ellipse) {
-        //console.log(element);
         return CreateShape("ellipse", element);
     }
     else if (element instanceof Polygon) {
@@ -111,9 +102,11 @@ function createElement(element) {
     else if (element instanceof Text) {
         return CreateTextBlock(element);
     }
-    else if (element instanceof SymbolInstance && checkElement(element.name)) {
-        console.log("will create: " + element.name);
+    else if (element instanceof SymbolInstance && isControl(element.name)) {
         return CreateCustomeControl(element);
+    }
+    else if (element instanceof SymbolInstance && isLayout(element.name)) {
+        return CreateLayout(element);
     }
     else if (element instanceof SymbolInstance) {
         return CreateControl(element);
@@ -121,17 +114,23 @@ function createElement(element) {
     else if (element instanceof Group) {
         return CreateLayout(element);
     }
-
     else{
         return "";
     }
 }
 
-function checkElement(type) {
-    var conditions = ["Text Box", "Combo Box", "Slider", "Switch"];
+function isControl(type) {
+    var conditions = ["Text Box", "Combo Box", "Slider", "Switch", "Rating"];
     //return type.includes(conditions);
     return conditions.some(el => type.includes(el));
 }
+
+function isLayout(name) {
+    var nam = name.toLowerCase().split(" ").join("");
+    var conditions = ["pagetitle"];
+    return conditions.some(el => nam.includes(el));
+}
+
 
 function getTabPosition(spaces) {
     lastTab = spaces;
@@ -144,7 +143,6 @@ function getTabPosition(spaces) {
 
 function CreateCustomeControl(ele) {
     var cfk = window.localStorage.getItem("component_framework");
-    console.log("framework is" + cfk);
     if (cfk == "blazorise") return CreateBlazorise(ele);
 }
 

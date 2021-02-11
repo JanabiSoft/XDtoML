@@ -1,106 +1,90 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = require("scenegraph");
-const {CreateShape} = require("./Shape.js")
-const {CreateControl} = require("./controls.js")
-const {CreateTextBlock} = require("./controls.js")
+const {CreateShape} = require("./HtmlShape.js")
+const {CreateControl} = require("./HtmlControl.js")
+const {CreateTextBlock} = require("./HtmlControl.js")
 
 function createLayout(item) {
     if (item != null) {
-        var type = getLayoutType(item);
-        console.log("creating Layout: " + type);
-        var result = "";
-        var ele = "";
-        var generalProps = " ";
-        var  margin = "";
-        if(item.parent instanceof Group) margin = getRelativeMargin(item);
-        else margin = getMargin(item);
-        var width = item.globalDrawBounds.width;
-        var height = item.globalDrawBounds.height;
+        var itemTag = getLayoutTag(item);
+        var style = getStyles(item);
+        var attrib = getAttributes(item);
+        console.log("creating layout: " + item.name);
 
-        // general properties
-        console.log("generating Layout general properties");
-        ele = "<" + type + " Name=\"" + item.name + "\"";
-        generalProps += "Width=\"" + width + "\"";
-        generalProps += " Height=\"" + height + "\"";
-        generalProps += " Margin=\"" + margin + "\"";
-
-        var result = "";
-        var specificProps = "";
-
-        result = ele + ">";
         var children = item.children;
         var content = "\n";
         if(children.length > 1) {
             children.forEach(function (element, i) {
-                console.log("Layout Child Control" + i + " : " + element.constructor.name);
                 
                 if (element instanceof Rectangle) {
-                    content += CreateShape("Rectangle", element);
+                    content += CreateShape("rect", element);
                 }
                 else if (element instanceof Ellipse) {
-                    //console.log(element);
-                    content += CreateShape("Ellipse", element);
+                    content += CreateShape("ellipse", element);
                 }
                 else if (element instanceof Polygon) {
-                    content += CreateShape("Polygon", element);
+                    content += CreateShape("polygon", element);
                 }
                 else if (element instanceof Line) {
-                    //console.log(element);
-                    content += "\t\t\t" + CreateShape("Line", element);
+                    console.log("generating line");
+                    content += "\t\t\t" + CreateShape("line", element);
                 }
                 else if (element instanceof Text) {
+                    console.log("creating content of layout: " + element.name);
                     content += "\t\t\t" + CreateTextBlock(element);
                 }
                 else if (element instanceof Path) {
-                    //console.log("Path:" + element.name);
                     if (element.name != "Footprint") {
                         //specificProps += " Background=\"#" + element.fill.value.toString(16) + "\"";
                         content += getControlPathProperties(element, type);
-                        console.log(element.name + " : " + content);
                     }
                 }
                 else if (element instanceof SymbolInstance) {
-                    //console.log(element);
                     content += CreateControl(element);
                 }
                 else if (element instanceof Group) {
-                    console.log(element.name  + " is group");
                     content += createLayout(element);
                 }
                  
-                //console.log(props);
             });
-            //console.log("iteraing throug hchildren finished:" + specificProps);
 
         }
         else{
-            //console.log("item has no children");
         }
-        
-        result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" >";
-        result += content + "\n\t\t</" + type + ">"
+
+        return "<" + itemTag + " " + attrib + " " + style + ">\n" + content + "\n</" + itemTag + ">";
+
+        // ele = "<" + ItemTag + " id=\"" + item.name + "\"";
+        // result = ele + ">";
+
+
+        // result = ele + " " + generalProps + specificProps + " HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" >";
+        // result += content + "\n\t\t</" + ItemTag + ">"
   
     
-        //console.log(result);
-        //console.log(specificProps);
 
-        return result;
+        //return result;
     }
 }
 
-function getLayoutType(item) {
-    var name = item.name;
-    if(name.includes("StackPanel")) return "StackPanel";
-    else if(name.includes("RelativePanel") ) return "RelativePanel";
-    else return "Grid";
+function getLayoutTag(item) {
+    //var name = item.name;
+    // if(name.includes("StackPanel")) return "div";
+    // else if(name.includes("RelativePanel") ) return "div";
+    // else if(name.includes("Grid") ) return "div";
 
+    // else return "Grid";
+
+    var name = item.name.toLowerCase().split(" ").join("");
+    var conditions = ["stacpPanel", "grid", "relativepanel", "pagetitle"];
+    if(conditions.some(el => name.includes(el))) return "div";
+    else return "div";
 }
 
 function getMargin(item) {
-    var x = item.boundsInParent.x;
-    var y = item.boundsInParent.y;
-    console.log("margins of Layout:" + item.name + " is " + x + "," + y);
+    var x = item.localBounds.x;
+    var y = item.localBounds.y;
 
-    return x.toString() +","+ y.toString() + ",0,0";
+    return " margin-left:" + x.toString() + ";" + " margin-top: " + y.toString() + ";";
 }
 
 function getRelativeMargin(item) {
@@ -109,12 +93,27 @@ function getRelativeMargin(item) {
     var x = item.boundsInParent.x - parentX;
     var y = item.boundsInParent.y - parentY;
     
-    console.log("margins of Layout:" + item.name + " is " + x + "," + y);
 
-    return x.toString() +","+ y.toString() + ",0,0";
+    return " margin-left:" + x.toString() + " margin-top: " + y.toString() + ";";
 }
 
+function getAttributes(item) {
+    return "id=\"" + item.name + "\"";
+}
 
+function getStyles(item) {
+    var style = "style=\"";
+    var generalProps = " ";
+    var  margin = "";
+    if(item.parent instanceof Group) margin = getRelativeMargin(item);
+    else margin = getMargin(item);
+    style += " width:" + item.globalDrawBounds.width + "px;";
+    style += " height:" + item.globalDrawBounds.height + "px;";
+    style += margin + "\"";
+
+
+    return style;
+}
 
 
 

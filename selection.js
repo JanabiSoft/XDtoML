@@ -1,26 +1,23 @@
 let output = "";
 const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path} = require("scenegraph");
-const {CreateControl} = require("./controls.js")
-const {CreateTextBlock} = require("./controls.js")
+const {CreateControl} = require("./controls.js");
+const {CreateTextBlock} = require("./controls.js");
 
-const {CreateShape} = require("./Shape.js")
-const {CreateLayout} = require("./Layout.js")
+const {CreateShape} = require("./Shape.js");
+const {CreateLayout} = require("./Layout.js");
 
 
 
 function convert(element) {
     var type = getElementType();
     var children = element.children;
-    console.log(type + " : " + element.name + "- selected");
 
     output = "<Grid>";
     var tab = "";
     var tag = "";
 
     if(children.length > 1) {
-        console.log("item has many children: " + children.length);
         children.forEach(item => {
-            console.log(item.name + "....");
             tab = getTabPosition(8);
             tag = tab + createElement(item);
          
@@ -29,7 +26,6 @@ function convert(element) {
         });
     }
     else{
-        console.log("element has no children");
 
         output += "\n" + createElement(element);
     }
@@ -53,7 +49,6 @@ function convert(element) {
 //         //txt = "<" + tag + ">\n</" + tag + ">";
 //         // output += "\n" + result;
 
-//         // console.log(result);
 //         // clipboard.copyText(output);
 //     }
 // }
@@ -97,7 +92,6 @@ function createElement(element) {
     if (element instanceof Rectangle) return CreateShape("Rectangle", element);
         
     else if (element instanceof Ellipse) {
-        //console.log(element);
         return CreateShape("Ellipse", element);
     }
     else if (element instanceof Polygon) {

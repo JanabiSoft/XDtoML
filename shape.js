@@ -3,7 +3,6 @@ const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegra
 
 
 function createShape(tag, item){
-    console.log("Creating: " + tag + ": " + item.name );
     var result = "";
     var ele = "";
     var props = "";
