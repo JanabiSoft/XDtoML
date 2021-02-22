@@ -1,6 +1,6 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
 
-function createShape(tag, item){
+function generateShape(item) {
     var result = "";
     var ele = "";
     var props = "";
@@ -11,76 +11,52 @@ function createShape(tag, item){
     var svgStart = "";
 
     var content = "";
+    var tag = "";
+
+    console.log("creating Shape: " + item.name);
 
     if (item != null) {
         if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
-            
         if (item.fill != null) fill = item.fill.value.toString(16).slice(2);
 
-        // var stroke = item.stroke != null ? item.stroke.value.toString(16) : undefined;
-        // var fill = item.fill != null ? item.fill.value.toString(16) : undefined;
-        // stroke = stroke.slice(2);
-        // fill = fill.slice(2);
-
-        //var svgStart = "<svg height=\"" + item.height + "\" width=\"" + item.width + "\" ";
         var svgEnd = "\t</svg>";
     
-        switch (tag) {
-            case "rect":
-                svgStart = "<svg height=\"" + item.height + "\" width=\"" + item.width + "\" ";
+        if (item instanceof Rectangle) {
+            tag = "rectangle";
+            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
+            props += "width=\"" + item.width + "\"";
+            props += " height=\"" + item.height + "\"";
+            props += getCornerRadii(item.cornerRadii);
+        } 
+        else if(item instanceof Ellipse) {
+            tag = "ellipse";
+            svgStart = "<svg height=\"" + (item.radiusY * 2) + "\" width=\"" + (item.radiusX * 2) + "\" ";
+            props += "cx=\"" + (item.localBounds.x + item.radiusX) + "\"";
+            props += " cy=\"" + (item.localBounds.y + item.radiusY) + "\"";
+            props += " rx=\"" + (item.radiusX).toString()+ "\"";
+            props += " ry=\"" + (item.radiusY).toString()+ "\"";
+        }
+        else if(item instanceof Polygon){
+            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
+            tag = "polygon";
 
-                props += "width=\"" + item.width + "\"";
-                props += " height=\"" + item.height + "\"";
-                props += getCornerRadii(item.cornerRadii);
-                    break;
-            case "ellipse":
-                svgStart = "<svg height=\"" + (item.radiusY * 2) + "\" width=\"" + (item.radiusX * 2) + "\" ";
+        }
+        else if(item instanceof Line){
+            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "px;\" width=\"" + item.globalDrawBounds.width + "px;\" ";
+            var x = item.start.x;
+            var y = item.start.y;
+            var x2 = item.end.x;
+            var y2 = item.end.y;
+            console.log("line dime: start:" + item.start.x + "," + item.start.y + " end: " + item.end.x + "," + item.end.y);
+            console.log("line bounds: x:" + item.boundsInParent.x + " y: " + item.boundsInParent.y);
+            tag = "line";
 
-                props += "cx=\"" + (item.localBounds.x + item.radiusX) + "\"";
-                props += " cy=\"" + (item.localBounds.y + item.radiusY) + "\"";
-                props += " rx=\"" + (item.radiusX).toString()+ "\"";
-                props += " ry=\"" + (item.radiusY).toString()+ "\"";
-                    break;
-            case "polygon":
-                svgStart = "<svg height=\"" + item.height + "\" width=\"" + item.width + "\" ";
-                // props += "width=\"" + item.width + "\"";
-                // props += " height=\"" + item.height + "\"";
-                break;
-            case "line":
-                var x, y, x2, y2;
-                if(item.parent instanceof Group){
-                    var parentX = item.parent.localBounds.x;
-                    var parentY = item.parent.localBounds.y;
-                    x = item.boundsInParent.x - parentX;
-                    y = item.boundsInParent.y - parentY;
-                                    
-                    x2 = x + item.boundsInParent.width;
-                    y2 = y - item.boundsInParent.height;
-                    props += "x1=\"" + x + "\"";
-                    props += " x2=\"" + x2 + "\"";
-                    props += " y1=\"" + y + "\"";
-                    props += " y2=\"" +  y2 + "\"";
-                }
-                else {
-                    x = item.boundsInParent.x;
-                    y = item.boundsInParent.y;
-                    x2 = item.boundsInParent.x + item.boundsInParent.width;
-                    y2 = item.boundsInParent.y + item.boundsInParent.height;
-                    props += "x1=\"" + x + "\"";
-                    props += " x2=\"" + x2 + "\"";
-                    props += " y1=\"" + y + "\"";
-                    props += " y2=\"" +  y2 + "\"";
-                }
-
-                svgStart = "<svg height=\"" + (y2 - y) + "\" width=\"" + (x2 - x) + "\" ";
-                break;
-            default:
-                break;
+            props += "x1=\"" + x + "\"";
+            props += " x2=\"" + x2 + "\"";
+            props += " y1=\"" + y + "\"";
+            props += " y2=\"" +  y2 + "\"";
         }
 
-        //props += " stroke-width:" + item.storkeWidth;
-
-        //if (tag != "line") svgStyle += getMargin(item);
         svgStyle += getMargin(item);
 
         if(stroke != undefined){
@@ -88,24 +64,23 @@ function createShape(tag, item){
             if(item.storkeWidth != undefined) eleStyle += "stroke-width:"+ item.storkeWidth + "px;";
             else eleStyle += "stroke-width:1px;";
         } 
-        if(fill != undefined && tag != "line") eleStyle += " fill: #" + fill + ";";
+        if(fill != undefined && !(item instanceof Line)) eleStyle += " fill: #" + fill + ";";
 
         eleStyle += "\"";
         svgStyle += "\"";
-        //svgStart += svgStyle + ">";
-
 
         ele = "\t\t<" + tag;
-        if(tag == "polygon") result = svgStart + " " + svgStyle + ">\n@*" + ele + " " + props + " " + eleStyle + "/>*@\n" + svgEnd;
-        else result = svgStart + " " + svgStyle + ">\n" + ele + " " + props + " " + eleStyle + "/>\n" + svgEnd;
+        if(tag == "polygon") result = svgStart + " " + svgStyle + ">\n@*" + ele + " " + props + " " + eleStyle + "/>*@\n\t" + svgEnd;
+        else result = svgStart + " " + svgStyle + ">\n\t" + ele + " " + props + " " + eleStyle + "/>\n\t" + svgEnd;
         return result;
     }
 }
 
 function getMargin(item) {
-    var x = item.globalDrawBounds.x;
-    var y = item.globalDrawBounds.y;
-    return " margin-left:" + x.toString() + "px; margin-top: " + y.toString() + "px;";
+    console.log(item.name + " : " + item.boundsInParent);
+    var x = item.boundsInParent.x;
+    var y = item.boundsInParent.y;
+    return "position:absolute;left:" + x.toString() + "px;top:" + y.toString() + "px;";
 }
 
 function getCornerRadii(radii) {
@@ -118,6 +93,6 @@ function getCornerRadii(radii) {
 }
 
 module.exports = {
-    CreateShape: createShape,
+    GenerateShape: generateShape
 };
 

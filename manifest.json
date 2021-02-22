@@ -1,5 +1,5 @@
 {
-  "name" : "XD to ML",
+  "name" : "XD to HTML",
   "host" : {
     "app" : "XD",
     "minVersion" : "21.0"
@@ -14,20 +14,10 @@
     "width" : 48,
     "height" : 48
   } ],
-  "uiEntryPoints" : [ {
+  "uiEntryPoints" : [{
     "type" : "menu",
-    "label" : "Convert Selection",
-    "commandId" : "ConvertSelection"
-  },
-  {
-    "type" : "menu",
-    "label" : "Convert Artboard",
-    "commandId" : "ConvertArtboard"
-  },
-  {
-    "type" : "menu",
-    "label" : "Convert HTML",
+    "label" : "HTML + Bootstrap",
     "commandId" : "ConvertHTML"
   }],
-  "version" : "0.1.0"
+  "version" : "0.1.3"
 }

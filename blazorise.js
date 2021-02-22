@@ -1,7 +1,6 @@
 //create complex componente from blazorise framework
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = require("scenegraph");
 
-
 function create(item) {
 
     if (item != null) {
@@ -11,31 +10,15 @@ function create(item) {
         else if(name.includes("combobox") ) return createSelect(item);
         else if(name.includes("slider") ) return createSlider(item);
         else if(name.includes("switch") ) return createSwitch(item);
+        else if(name.includes("radiobutton") ) return createRadioButtons(item);
         else return createUnknown(item);
     }
 }
-
-// function getControlType(item) {
-//     var name = item.name;
-//     if(name.includes("TextBox") || name.includes("Text Box")) return "Field";
-//     else if(name.includes("Combo Box") ) return "Select";
-//     else if(name.toLowerCase().includes("slider") ) return "Slider";
-//     else if(name.toLowerCase().includes("switch") ) return "Switch";
-
-//     else return "Grid";
-// }
 
 function createField(ele) {
 
     var result = "";
     var style = " style=\"";
-    //var generalProps = " ";
-    //var  margin = "0";
-    // if(ele.parent instanceof Group) margin = getRelativeMargin(item);
-    // var width = item.globalDrawBounds.width;
-    // var height = item.globalDrawBounds.height;
-    var text = "";
-    var name = ele.name;
     var content = "";
 
     // attributes
@@ -44,31 +27,10 @@ function createField(ele) {
     //style
     style += generateStyle(ele, "Field");
 
-
-    //content
-    //var type = getControlType(ele);
-
-
-    //result = type + ">";
-    //getting specific proeprties
-
     var children = ele.children;
 
     if(children.length > 1) {
         children.forEach(function (element, i) {
-            
-            // if (element instanceof Rectangle && element.name != "Footprint") {
-            //     content += CreateShape("rect", element);
-            // }
-            // else if (element instanceof Ellipse) {
-            //     content += CreateShape("ellipse", element);
-            // }
-            // else if (element instanceof Polygon) {
-            //     content += CreateShape("polygon", element);
-            // }
-            // else if (element instanceof Line) {
-            //     content += CreateShape("line", element);
-            // }
             if (element instanceof Text) {
                 if(element.name.includes("header")) content += "\n\t<FieldLabel>" + element.text + "</FieldLabel>";
                 if (element.name.toLowerCase().includes("hint")) content += "\n\t<TextEdit Placeholder=\"" + element.name + "\"/>";
@@ -91,56 +53,7 @@ function createField(ele) {
         }
     }
 
-    //style += generalProps + specificProps + "\"";
-
-    //result = finishControl(type, id, "", style, text);
     result = "<Field " + attributes  + style + "\" >" + "\n" + content + "\n\t</Field>";
-
-        //result = "<" + type + " " + id + style + " >" + text + "</" + type + ">";
-
-    return result;
-}
-
-function createSelect(ele) {
-
-    var result = "";
-    var style = " style=\"";
-    var text = "";
-    var name = ele.name;
-    var content = "";
-
-    // attributes
-    var attributes = generateAttributes(ele);
-
-    //style
-    style += generateStyle(ele, "Select");
-
-    //content
-    var children = ele.children;
-
-    if(children.length > 1) {
-        children.forEach(function (element, i) {
-            if (element instanceof Text) {
-                //if(element.name.includes.toLowerCase().includes("header")) content += "\n\t<FieldLabel>" + element.text + "</FieldLabel>";
-                //if (element.name.toLowerCase().includes("selected list item")) content += "\n\t<TextEdit Placeholder=\"" + element.name + "\"/>";
-            }
-            else if (element instanceof Path) {
-                if (element.name != "Footprint" || type == "AppBarButton") {
-                    specificProps += getControlPathProperties(element, type);
-                }
-            }
-            else if (element instanceof Group) {
-                if(!element.name.toLowerCase().includes("chevron")) style += extractStyleFromContent(element, "Field");
-            }
-        });
-    }
-    else{
-        if (type == "HyperlinkButton") {
-            specificProps += getControlTextProperties(type, item);
-        }
-    }
-
-    result = "<Select TValue=\"string\"" + attributes  + style + "\" >" + "\n" + content + "\n\t</Select>";
     return result;
 }
 
@@ -158,15 +71,11 @@ function createSlider(ele) {
     //content
     var content = "";
 
-
     if(ele.children.length > 1) {
         ele.children.forEach(function (element, i) {
             if (element instanceof Text) {
-                //if(element.name.includes.toLowerCase().includes("header")) content += "\n\t<FieldLabel>" + element.text + "</FieldLabel>";
-                //if (element.name.toLowerCase().includes("selected list item")) content += "\n\t<TextEdit Placeholder=\"" + element.name + "\"/>";
             }
             else if (element instanceof Group) {
-                //style += extractStyleFromContent(element, "Slider");
             }
         });
     }
@@ -176,9 +85,6 @@ function createSlider(ele) {
 
 function createSwitch(ele) {
 
-    var result = "";
-    var name = ele.name;
-
     var attributes = generateAttributes(ele);
     var style = " style=\"" + generateStyle(ele, "Switch");
     var content = "";
@@ -186,8 +92,6 @@ function createSwitch(ele) {
     if(ele.children.length > 1) {
         ele.children.forEach(function (element, i) {
             if (element instanceof Text) {
-                //if(element.name.includes.toLowerCase().includes("header")) content += "\n\t<FieldLabel>" + element.text + "</FieldLabel>";
-                //if (element.name.toLowerCase().includes("selected list item")) content += "\n\t<TextEdit Placeholder=\"" + element.name + "\"/>";
             }
             else if (element instanceof Path) {
                 if (element.name != "Footprint" || type == "AppBarButton") {
@@ -195,12 +99,42 @@ function createSwitch(ele) {
                 }
             }
             else if (element instanceof Group) {
-                //style += extractStyleFromContent(element, "Slider");
             }
         });
     }
 
     return "<Switch TValue=\"bool\"" + attributes  + style + "\">" + content + "</Switch>";
+}
+
+function createRadioButtons(item) {
+    var result = "";
+    var name = item.name;
+
+    var attributes = generateAttributes(item);
+    var style = " style=\"" + generateStyle(item, "RadioButtons");
+    var content = "";
+
+    if(item.children.length > 1) {
+        item.children.forEach(function (element, i) {
+            console.log("radio buttons element: " + i + " : " + element.name);
+            if (element instanceof Text) {
+                attributes += "Name=\"" + element.text + "\"";
+            }
+            else if (element instanceof Path) {
+                if (element.name != "Footprint" || type == "AppBarButton") {
+                    specificProps += getControlPathProperties(element, type);
+                }
+            }
+            else if (element instanceof Group) {
+                //console.log("radio buttons children counts: " + element.children.count);
+                console.log("child1 name: " + element.children.at(0).name);
+
+                content += "\n\t<Radio TValue=\"string\" >" +  element.children.at(1).text +"</Radio>";
+            }
+        });
+    }
+
+    return "<RadioGroup TValue=\"string\"" + attributes  + style + "\">" + content + "</RadioGroup>";
 }
 
 function createUnknown(item) {
@@ -227,43 +161,18 @@ function generateAttributes(ele) {
     return id;
 }
 
-function generateStyle(ele, type) {
+function generateStyle(item, type) {
     var genProps = " ";
-    var width = ele.globalDrawBounds.width;
-    var height = ele.globalDrawBounds.height;
+    var width = item.globalDrawBounds.width;
+    var height = item.globalDrawBounds.height;
 
     genProps += " width: " + width + "px;";
     genProps += " height: " + height + "px;";
 
-    if(ele.parent instanceof Group){
+    if(item.parent instanceof Group){
         genProps += " margin: " + getRelativeMargin(item) + "px;";
     }
     return genProps;
-}
-
-function IsLayout(type) {
-    if (type == "div") {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function isGroupControl(type) {
-    if (type == "RadioButtons") {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function finishControl(type, id, attributes, style, content) {
-    switch (type) {
-        case "Field":
-            return "<Field " + id + attributes + style + " >" + "\n" + content + "\n</Field>";
-            default:
-            return "<" + type + " " + id + " " + props + " " + style + " >" + text + "</" + type + ">";
-    }
 }
 
 function getRelativeMargin(item) {
@@ -328,8 +237,6 @@ function getControlTextProperties(tag, item) {
         prop += " font-size: " + item.fontSize + ";";
     }
 
-
-
     return prop;
 }
 
@@ -341,19 +248,11 @@ function getControlPathProperties(item, tag) {
 
     if (conditions.some(el => pathName.includes(el)) || tag == "AppBarButton") {
         if(item.fill != undefined) prop += " background-color: #" + item.fill.value.toString(16).slice(2) + ";";
-        //if(item.stroke != undefined) prop += " background-color: #" + item.fill.value.toString(16).slice(2) + ";";
     }
-
-    //if(pathName.includes("Base")) prop += " Background=\"#" + item.fill.value.toString(16) + "\"";
     else if(pathName.includes("Indicator")) prop += " color: #" + item.fill.value.toString(16).slice(2) + ";";
-    //else if(pathName.includes("Track")) prop += " Background=\"#" + item.fill.value.toString(16) + "\"";
     else if(pathName.includes("Outer Ellipse")) prop += "";
-    //else if(pathName.includes("Outer Ellipse")) prop += "";
-    //else if(pathName.includes("Toggle")) prop += " Background=\"#" + item.fill.value.toString(16) + "\"";
     return prop;
 }
-
-
 
 module.exports = {
     CreateBlazorise: create

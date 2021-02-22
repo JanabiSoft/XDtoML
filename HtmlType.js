@@ -18,8 +18,6 @@ function hyperLink() {
     return "<a ";
 }
 
-
-
 module.exports = {
     getElement: getControlType,
     CreateTextBlock: createTextBlock

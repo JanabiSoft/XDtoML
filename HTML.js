@@ -1,24 +1,23 @@
 let output = "";
 const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path, Artboard} = require("scenegraph");
-const {CreateControl} = require("./HtmlControl.js");
-const {CreateTextBlock} = require("./HtmlControl.js");
-
+const {CreateControl, CreateTextBlock} = require("./HtmlControl.js");
 const {CreateShape} = require("./HtmlShape.js");
 const {CreateLayout} = require("./HtmlLayout.js");
-const artboard = require("./artboard.js");
 const {CreateBlazorise} = require("./blazorise.js");
 
 let lastTab = 0;
 
 function convert(selection) {
-    //var type = getElementType();
     var children = selection.children;
     var page = "";
+    var header = "<head>";
+    header += "\n<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl\" crossorigin=\"anonymous\">";
+    header += "\n</head>";
 
     if(selection instanceof Artboard){
         page = "<!DOCTYPE html>\n";
         page += "<html>\n";
-        page += "<body>";
+        page += header + "\n<body>";
     }else{
         page = "<div>";
     }
@@ -41,47 +40,14 @@ function convert(selection) {
     }
 
     if(selection instanceof Artboard){
-        return output += "\n\t</body>\n</html>";
+        var ending = "\n<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0\" crossorigin=\"anonymous\"></script>";
+        
+        return output += ending + "\n\t</body>\n</html>";
     }else{
         return output += "\n\t</div>\n";
     }
 
 }
-
-function getProperties(item) {
-    var props = "Width=\"";
-    props += item.width + "\"";
-    props += " ";
-    props += "Height=\"";
-    props += item.height + "\"";
-
-    return props;
-}
-
-// function getElementType(element) {
-//     if (element instanceof Rectangle) {
-//         return "rect";
-//     }
-//     else if (element instanceof Ellipse) {
-//         return "ellipse ";
-//     }
-//     else if (element instanceof Polygon) {
-//         return "polygon";
-//     }
-//     else if (element instanceof Line) {
-//         return "line";
-//     }
-//     else if (element instanceof Text) {
-//         return "Text";
-//     }
-//     else if (element instanceof Path) {
-//         return "Path";
-//     }
-//     else if (element instanceof Group) {
-//         return "Group";
-//     }
-
-// }
 
 function createElement(element) {
         
@@ -121,7 +87,6 @@ function createElement(element) {
 
 function isControl(type) {
     var conditions = ["Text Box", "Combo Box", "Slider", "Switch", "Rating"];
-    //return type.includes(conditions);
     return conditions.some(el => type.includes(el));
 }
 
@@ -130,7 +95,6 @@ function isLayout(name) {
     var conditions = ["pagetitle"];
     return conditions.some(el => nam.includes(el));
 }
-
 
 function getTabPosition(spaces) {
     lastTab = spaces;
@@ -145,7 +109,6 @@ function CreateCustomeControl(ele) {
     var cfk = window.localStorage.getItem("component_framework");
     if (cfk == "blazorise") return CreateBlazorise(ele);
 }
-
 
 module.exports = {
     ConvertHTML: convert,
