@@ -1,5 +1,5 @@
 {
-  "name" : "XD to XAML",
+  "name" : "XD to HTML",
   "host" : {
     "app" : "XD",
     "minVersion" : "21.0"
@@ -14,15 +14,10 @@
     "width" : 48,
     "height" : 48
   } ],
-  "uiEntryPoints" : [ {
+  "uiEntryPoints" : [{
     "type" : "menu",
-    "label" : "Convert Selection",
-    "commandId" : "convertSelection"
-  },
-  {
-    "type" : "menu",
-    "label" : "Convert Artboard",
-    "commandId" : "convertArtboard"
-  } ],
-  "version" : "0.0.1"
+    "label" : "HTML + Bootstrap",
+    "commandId" : "ConvertHTML"
+  }],
+  "version" : "0.1.3"
 }
