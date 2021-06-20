@@ -28,8 +28,9 @@ function createSectionHeadline(item) {
 }
 
 function createAppBarButton(item) {
-    var txt = item.children.at(2).children.at(1).text;
-    var icon = item.children.at(1).text;
+    var txt = item.children.at(1).text;
+    var font = item.children.at(2).children.at(1).fontFamily;
+    var icon = item.children.at(2).children.at(1).text;
     var labelColor = GetTextColor(item.children.at(2).children.at(1));
     var iconColor = GetTextColor(item.children.at(1));
     var buttonColor = "background-color:" + GetColors(item.children.at(0));
@@ -38,8 +39,14 @@ function createAppBarButton(item) {
     var style = " style=\"" + GenerateStyle(item) + buttonColor + "\"";
 
     var control = "<button" + attributes + style + ">";
-    var content = "\n\t<p style=\"text-align:senter;" + iconColor + '">' + icon + "</p>";
-    control += '\n\t<p style="text-align:senter;' + labelColor + '">' + txt + "</p>";
+    var content = "";
+    console.log(font);
+    if (font.includes("Font Awesome")) { 
+        content = "\n\t<i class=\"fa fa-car\" style=\"text-align:center;" + iconColor + '"></i>';
+        
+    }
+    else content = "\n\t<p style=\"text-align:center;" + iconColor + '">' + icon + "</p>";
+    control += '\n\t<p style="text-align:center;' + labelColor + '">' + txt + "</p>";
 
     control += content + "\n</button>";
     return control;

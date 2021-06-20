@@ -1,7 +1,9 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = require("scenegraph");
-const {CreateShape} = require("./HtmlShape.js");
+const {GenerateShape} = require("./HtmlShape.js");
 const {GenerateAttributes, GetColors} = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
+const {CreateText} = require("./Text.js");
+
 
 function createControl(item) {
    
@@ -14,6 +16,7 @@ function createControl(item) {
         else if(itemName.includes("radiobuttongroup") ) return createRadioButtons(item);
         else if(itemName.includes("combobox") ) return createSelect(item);
         else if(itemName.includes("button") ) return createButton(item);
+        else if(itemName.includes("pageheader")) return CreatePageHeader(item);
 
         var style = getStyle(item);
         var attrib = getAttributes(item);
@@ -83,7 +86,7 @@ function createControl(item) {
                         specificProps += CreateShape("polygon", element);
                     }
                     else if (element instanceof Line) {
-                        specificProps += CreateShape("line", element);
+                        specificProps += GenerateShape("line", element);
                     }
                     else if (element instanceof Text) {
                         text += element.text;
@@ -130,6 +133,7 @@ function getControlType(item) {
     else if(name.includes("pagetitle")) return "Custome";
     else if(name.includes("pagetitle")) return "Custome";
     else if(name.includes("button") || name.includes("accentbutton")) return "Button";
+    else if(name.includes("pageheader")) return "PageHeader";
 
     else return "unknown";
 }
@@ -386,6 +390,19 @@ function createButton(item) {
     var style = " style=\"" + GenerateStyle(item) + labelColor + colors;
 
     return "<button " + attributes + style + "\">" + label + '</button>';
+}
+
+function CreatePageHeader(item) {
+    console.log("creating page header");
+    var title = item.children.at(0).text;
+    var border = item.children.at(1);
+    var titleColor = "color:" + GetColors(item.children.at(0));
+
+    var control = "<div>\n";
+    control += CreateText(item.children.at(0)) + "\n";
+    control += GenerateShape(item.children.at(1)) + "\n";
+    control += "</div>";
+
 }
  
 module.exports = {

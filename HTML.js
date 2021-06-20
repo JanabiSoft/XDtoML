@@ -1,7 +1,7 @@
 let output = "";
 const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path, Artboard} = require("scenegraph");
 const {CreateControl, CreateTextBlock} = require("./HtmlControl.js");
-const {CreateShape} = require("./HtmlShape.js");
+const {GenerateShape} = require("./HtmlShape.js");
 const {CreateLayout} = require("./HtmlLayout.js");
 const {CreateBlazorise} = require("./blazorise.js");
 
@@ -54,13 +54,13 @@ function createElement(element) {
     if (element instanceof Rectangle) return CreateShape("rect", element);
         
     else if (element instanceof Ellipse) {
-        return CreateShape("ellipse", element);
+        return GenerateShape("ellipse", element);
     }
     else if (element instanceof Polygon) {
-        return CreateShape("polygon", element);
+        return GenerateShape("polygon", element);
     }
     else if (element instanceof Line) {
-        return CreateShape("line", element);
+        return GenerateShape("line", element);
     }
     else if (element instanceof Text && element.name.includes("Hyperlink")) {
         return CreateControl(element);
