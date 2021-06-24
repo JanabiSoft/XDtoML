@@ -56,6 +56,7 @@ module.exports = {
     GenerateAttributes: generateAttributes,
     GenerateStyle: generateStyle,
     GetTextColor: getTextColor,
-    GetColors:getColors
+    GetColors:getColors,
+    GetPosition: getPosition
 
 };
