@@ -1,9 +1,10 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance, RepeatGrid} = require("scenegraph");
 const {GenerateShape} = require("./HtmlShape.js");
-const {CreateControl, CreateTextBlock} = require("./HtmlControl.js");
+const {CreateControl, CreateTextBlock, GetControlPathProperties} = require("./HtmlControl.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition} = require("./Common.js");
 const {CreateUserControl} = require("./UserControl.js");
+
 
 function createLayout(item) {
     if (item != null) {
@@ -25,7 +26,7 @@ function createLayout(item) {
                 }
                 else if (element instanceof Path) {
                     if (element.name != "Footprint") {
-                        content += getControlPathProperties(element, type);
+                        content += GetControlPathProperties(element, itemTag);
                     }
                 }
                 else if (element instanceof SymbolInstance && IsCustomeControl(element.name)) {

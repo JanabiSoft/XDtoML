@@ -22,7 +22,7 @@ function generateShape(item) {
         var svgEnd = "\t</svg>";
     
         if (item instanceof Rectangle) {
-            tag = "rectangle";
+            tag = "rect";
             svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
             props += "width=\"" + item.width + "\"";
             props += " height=\"" + item.height + "\"";

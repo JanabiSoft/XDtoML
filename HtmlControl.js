@@ -407,6 +407,7 @@ function CreatePageHeader(item) {
  
 module.exports = {
     CreateControl: createControl,
-    CreateTextBlock: createTextBlock
+    CreateTextBlock: createTextBlock,
+    GetControlPathProperties: getControlPathProperties
 };
 
