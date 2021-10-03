@@ -1,23 +1,20 @@
-const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
-
-function generateShape(item) {
+function generateImage(item) {
+    console.log("generating image started: " + item.name);
     var result = "";
     var ele = "";
     var props = "";
     var eleStyle = "style=\"";
-    var svgStyle = "style=\"";
     var stroke = "";
     var fill = "";
-    var svgStart = "";
 
     var content = "";
-    var tag = getShapeTag(item.constructor.name);
+    var tag = "";
 
-    console.log("creating Shape: " + item.constructor.name + ":" + item.name);
+    console.log("creating Image: " + item.name);
 
     if (item != null) {
         if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
-        if (item.fill != null) fill = item.fill;
+        if (item.fill != null) fill = item.fill.value.toString(16).slice(2);
 
         var svgEnd = "\t</svg>";
     
@@ -76,38 +73,11 @@ function generateShape(item) {
     }
 }
 
-function getMargin(item) {
-    console.log(item.name + " : " + item.boundsInParent);
-    var x = item.boundsInParent.x;
-    var y = item.boundsInParent.y;
-    return "position:absolute;left:" + x.toString() + "px;top:" + y.toString() + "px;";
-}
-
-function getCornerRadii(radii) {
-    var result = "";
-    if (radii.topLeft != 0) result += " rx=\"" + radii.topLeft + "\"";
-    if (radii.topRight != 0) result += " rx=\"" + radii.topRight + "\"";
-    if (radii.bottomRight != 0) result += " ry=\"" + radii.bottomRight + "\"";
-    if (radii.bottomLeft != 0) result += " ry=\"" + radii.bottomLeft + "\"";
-    return result;
-}
-
-function getShapeTag(shape) {
-    switch (shape) {
-        case "Rectangle":
-            return "rect";
-        case "Ellipse":
-            return "ellipse";
-        case "Line":
-            return "line";
-        case "Polygon":
-            return "polygon";
-        default:
-            return "rect";
-    }
+function hyperLink() {
+    return "<a ";
 }
 
 module.exports = {
-    GenerateShape: generateShape
+    GenerateImage: generateImage
+    
 };
-

@@ -4,20 +4,23 @@ const {CreateControl, CreateTextBlock} = require("./HtmlControl.js");
 const {GenerateShape} = require("./HtmlShape.js");
 const {CreateLayout} = require("./HtmlLayout.js");
 const {CreateBlazorise} = require("./blazorise.js");
+const {GenerateImage} = require("./Image.js");
+
 
 let lastTab = 0;
 
 function convert(selection) {
+    console.log("converting to html: " + selection.constructor.name);
     var children = selection.children;
     var page = "";
-    var header = "<head>";
-    header += "\n<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl\" crossorigin=\"anonymous\">";
-    header += "\n</head>";
+    var header = "\t<head>";
+    header += "\n\t\t<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl\" crossorigin=\"anonymous\">";
+    header += "\n\t</head>";
 
     if(selection instanceof Artboard){
         page = "<!DOCTYPE html>\n";
         page += "<html>\n";
-        page += header + "\n<body>";
+        page += header + "\n\t<body>";
     }else{
         page = "<div>";
     }
@@ -28,7 +31,7 @@ function convert(selection) {
 
     if(children.length > 1) {
         children.forEach(item => {
-            tab = getTabPosition(4);
+            tab = getTabPosition(8);
             tag = createElement(item);
          
             output += "\n" + tab + tag;
@@ -51,16 +54,19 @@ function convert(selection) {
 
 function createElement(element) {
         
-    if (element instanceof Rectangle) return CreateShape("rect", element);
+    console.log("creating element: " + element.constructor.name);
+
+    if (element instanceof Image) return GenerateImage();
+    else if (element instanceof Rectangle) return GenerateShape(element);
         
     else if (element instanceof Ellipse) {
-        return GenerateShape("ellipse", element);
+        return GenerateShape(element);
     }
     else if (element instanceof Polygon) {
-        return GenerateShape("polygon", element);
+        return GenerateShape(element);
     }
     else if (element instanceof Line) {
-        return GenerateShape("line", element);
+        return GenerateShape(element);
     }
     else if (element instanceof Text && element.name.includes("Hyperlink")) {
         return CreateControl(element);

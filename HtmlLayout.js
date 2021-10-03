@@ -84,7 +84,6 @@ function createGrid(item) {
     }
 }
 
-
 function getLayoutTag(item) {
     var name = item.name.toLowerCase().split(" ").join("");
     var conditions = ["stacpPanel", "grid", "relativepanel", "pagetitle"];
