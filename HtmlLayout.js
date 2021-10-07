@@ -12,49 +12,49 @@ function createLayout(item, tab) {
         var style = "style=\"" + GenerateStyle(item) + "\"";
         var attrib = GenerateAttributes(item);
         console.log("creating layout: " + item.name);
-        tab += "\t";
+        var internalTab = "\t" + tab;
 
         var children = item.children;
         var content = "";
         if(children.length > 1) {
             children.forEach(function (element, i) {
                 if(element instanceof Rectangle && element.name == "frame"){
-                    content += "\n" + tab + createBox(element, tab);
+                    content += "\n" + internalTab + createBox(element, internalTab);
                 }
                 else if (element instanceof Rectangle || element instanceof Ellipse || element instanceof Polygon || element instanceof Line) {
-                    content += "\n\t" + tab + GenerateShape(element, tab);
+                    content += "\n\t" + internalTab + GenerateShape(element, internalTab);
                 }
                 else if (element instanceof Text) {
-                    content += "\n" + tab + CreateTextBlock(element, tab);
+                    content += "\n" + internalTab + CreateTextBlock(element, internalTab);
                 }
                 else if (element instanceof Path) {
-                    content += "\n" + tab + GenerateShape(element, tab);
+                    content += "\n" + internalTab + GenerateShape(element, internalTab);
                     // if (element.name != "Footprint") {
                     //     content += GetControlPathProperties(element, itemTag);
                     // }
-                    // else content += GenerateShape(element, tab);
+                    // else content += GenerateShape(element, internalTab);
                 }
                 else if (element instanceof SymbolInstance && IsCustomeControl(element.name)) {
-                    content += "\n\t" + tab + CreateBlazorise(element);
+                    content += "\n\t" + internalTab + CreateBlazorise(element);
                 }
                 else if (element instanceof SymbolInstance && IsUserControl(element.name)) {
-                    content += "\n\t\t" + tab + CreateUserControl(element, tab);
+                    content += "\n\t\t" + internalTab + CreateUserControl(element, internalTab);
                 }
                 else if (element instanceof SymbolInstance) {
-                    content += "\n\t\t" + tab + CreateControl(element, tab);
+                    content += "\n\t\t" + internalTab + CreateControl(element, internalTab);
                 }
                 else if (element instanceof Group) {
-                    content += "\n" + tab + createLayout(element, tab);
+                    content += "\n" + internalTab + createLayout(element, internalTab);
                 }
                 else if (element instanceof RepeatGrid) {
-                    content += "\t\t" + tab + createGrid(element, tab);
+                    content += "\t\t" + internalTab + createGrid(element, internalTab);
                 }
             });
         }
         else{
         }
 
-        return "<" + itemTag + " " + attrib + " " + style + ">\t" + tab + content + "\n" + tab + "</" + itemTag + ">";
+        return "<" + itemTag + " " + attrib + " " + style + tab + content + "\n" + tab + "</" + itemTag + ">";
     }
 }
 

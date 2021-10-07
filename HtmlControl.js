@@ -1,6 +1,6 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = require("scenegraph");
 const {GenerateShape} = require("./HtmlShape.js");
-const {GenerateAttributes, GetColors} = require("./Common.js");
+const {GenerateAttributes, GetColors, GetTextColor} = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
 const {CreateText} = require("./Text.js");
 
@@ -227,10 +227,9 @@ function isGroupControl(type) {
 
 function createTextBlock(item, tab) {
     var txt = item.text;
-    var textColor = "color:" + GetColors(item);
-    var style = "style=\"" + GenerateStyle(item) + textColor + "\"" ;
+    var style = "style=\"" + GenerateStyle(item) + GetTextColor(item) + "\"" ;
     var attrib = GenerateAttributes(item);
-    return "<label " + attrib + " " + style +">" + txt + "</label>";
+    return "<span " + attrib + " " + style +">" + txt + "</span>";
 }
 
 function getControlSpecificProperties(type, item) {

@@ -1,5 +1,5 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
-const {GetCornerRadii} = require("./Common.js");
+const {GetCornerRadii, GetColors} = require("./Common.js");
 
 function generateShape(item, tab) {
     var result = "";
@@ -22,29 +22,29 @@ function generateShape(item, tab) {
         if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
         if (item.fill != null) fill = item.fill.value.toString(16).slice(2);
 
-        var svgEnd = "</svg>";
+        var svgEnd = "\n" + tab + " </svg>";
     
         if (item instanceof Rectangle) {
             tag = "rect";
-            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
+            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\"";
             props += "width=\"" + item.width + "\"";
             props += " height=\"" + item.height + "\"";
             props += GetCornerRadii(item.cornerRadii);
         } 
         else if(item instanceof Ellipse) {
             tag = "ellipse";
-            svgStart = "<svg height=\"" + (item.radiusY * 2) + "\" width=\"" + (item.radiusX * 2) + "\" ";
+            svgStart = "<svg height=\"" + (item.radiusY * 2) + "\" width=\"" + (item.radiusX * 2) + "\"";
             props += "cx=\"" + (item.localBounds.x + item.radiusX) + "\"";
             props += " cy=\"" + (item.localBounds.y + item.radiusY) + "\"";
             props += " rx=\"" + (item.radiusX).toString()+ "\"";
             props += " ry=\"" + (item.radiusY).toString()+ "\"";
         }
         else if(item instanceof Polygon){
-            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
+            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\"";
             tag = "polygon";
         }
         else if(item instanceof Line){
-            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "px;\" width=\"" + item.globalDrawBounds.width + "px;\" ";
+            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "px;\" width=\"" + item.globalDrawBounds.width + "px;\"";
             var x = item.start.x;
             var y = item.start.y;
             var x2 = item.end.x;
@@ -61,25 +61,27 @@ function generateShape(item, tab) {
         else if(item instanceof Path){
             tag = "path";
             var d = item.pathData;
-            svgStart = "<svg height=\"" + Math.round(item.globalDrawBounds.height) + "\" width=\"" + item.globalDrawBounds.width + "\" ";
+            svgStart = "<svg height=\"" + Math.round(item.globalDrawBounds.height) + "\" width=\"" + Math.round(item.globalDrawBounds.width) + "\"";
             props += " d=\"" + d + "\"";
         }
 
         svgStyle += getMargin(item);
 
-        if(stroke != undefined){
-            eleStyle += " stroke: #" + stroke + ";";
-            if(item.storkeWidth != undefined) eleStyle += "stroke-width:"+ item.storkeWidth + "px;";
-            else eleStyle += "stroke-width:1px;";
-        } 
-        if(fill != undefined && !(item instanceof Line)) eleStyle += " fill: #" + fill + ";";
+        svgStyle += GetColors(item);
+
+        // if(stroke != undefined){
+        //     eleStyle += " stroke: #" + stroke + ";";
+        //     if(item.storkeWidth != undefined) eleStyle += "stroke-width:"+ item.storkeWidth + "px;";
+        //     else eleStyle += "stroke-width:1px;";
+        // } 
+        // if(fill != undefined && !(item instanceof Line)) eleStyle += " fill: #" + fill + ";";
 
         eleStyle += "\"";
         svgStyle += "\"";
 
         ele = "<" + tag;
         if(tag == "polygon") result = svgStart + " " + svgStyle + ">\n@*" + ele + " " + props + " " + eleStyle + "/>*@\n\t" + tab + svgEnd;
-        else result = svgStart + " " + svgStyle + ">\n" + tab + ele + " " + props + " " + eleStyle + "/>\n" + svgEnd;
+        else result = svgStart + " " + svgStyle + ">\n" + tab + ele + " " + props + " " + eleStyle + "/>" + svgEnd;
         return result;
     }
 }

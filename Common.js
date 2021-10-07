@@ -21,8 +21,8 @@ function generateAttributes(ele) {
 
 function generateStyle(item) {
     var genProps = "";
-    var width = item.globalDrawBounds.width;
-    var height = item.globalDrawBounds.height;
+    var width = Math.round( item.globalDrawBounds.width);
+    var height = Math.round(item.globalDrawBounds.height);
 
     genProps += "width:" + width + "px;";
     genProps += "height:" + height + "px;";
@@ -34,21 +34,22 @@ function generateStyle(item) {
     return genProps + position;
 }
 
-function GetColors(item) {
-    var stroke;
-    var fill;
-    var result;
-    if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
-    if (item.fill != null) fill = item.fill.value.toString(16).slice(2);
+function getColors(item) {
+    console.log("getting colors");
+    var result = "";
+    if (item.stroke != null) {
+        result = "stroke:#" + item.stroke.value.toString(16).slice(2) + ";";
+    }
+    if (item.storkeWidth != undefined) {
+        result += "stroke-width:" + item.storkeWidth + "px;";
+    }
+    if (item.fill != null) {
+        result += "background-color:#" + item.fill.value.toString(16).slice(2) + ";";
+        //result += "red";
+    }
 
-    if(stroke != undefined){
-        result += " stroke: #" + stroke + ";";
-        if(item.storkeWidth != undefined) result += "stroke-width:"+ item.storkeWidth + "px;";
-        else result += "stroke-width:1px;";
-    } 
-    if(fill != undefined && !(item instanceof Line)) result += " fill: #" + fill + ";";
-    console.log("fill color test is: " + result);
     return result;
+
 }
 
 function getTextColor(item) {
@@ -56,10 +57,10 @@ function getTextColor(item) {
     else return "";
 }
 
-function getColors(item) {
-    if (item.fill != undefined) return "#" + item.fill.value.toString(16).slice(2) + ";";
-    else return "";
-}
+// function getColors(item) {
+//     if (item.fill != undefined) return "#" + item.fill.value.toString(16).slice(2) + ";";
+//     else return "";
+// }
 
 //support functions
 function getPosition(item) {
