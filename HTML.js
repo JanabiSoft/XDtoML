@@ -5,6 +5,7 @@ const {GenerateShape} = require("./HtmlShape.js");
 const {CreateLayout} = require("./HtmlLayout.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {GenerateImage} = require("./Image.js");
+const Image = require("scenegraph").ImageFill;
 
 
 let lastTab = 0;
@@ -32,7 +33,7 @@ function convert(selection) {
     if(children.length > 1) {
         children.forEach(item => {
             tab = getTabPosition(8);
-            tag = createElement(item);
+            tag = createElement(item, tab);
          
             output += "\n" + tab + tag;
         });
@@ -47,44 +48,45 @@ function convert(selection) {
         
         return output += ending + "\n\t</body>\n</html>";
     }else{
-        return output += "\n\t</div>\n";
+        return output += "\n</div>\n";
     }
 
 }
 
-function createElement(element) {
+function createElement(element, tab) {
         
     console.log("creating element: " + element.constructor.name);
 
-    if (element instanceof Image) return GenerateImage();
-    else if (element instanceof Rectangle) return GenerateShape(element);
+    if (element instanceof Rectangle && element.fill instanceof Image) return GenerateImage(element, tab);
+
+    else if (element instanceof Rectangle) return GenerateShape(element, tab);
         
     else if (element instanceof Ellipse) {
-        return GenerateShape(element);
+        return GenerateShape(element, tab);
     }
     else if (element instanceof Polygon) {
-        return GenerateShape(element);
+        return GenerateShape(element, tab);
     }
     else if (element instanceof Line) {
-        return GenerateShape(element);
+        return GenerateShape(element, tab);
     }
     else if (element instanceof Text && element.name.includes("Hyperlink")) {
-        return CreateControl(element);
+        return CreateControl(element, tab);
     }
     else if (element instanceof Text) {
-        return CreateTextBlock(element);
+        return CreateTextBlock(element, tab);
     }
     else if (element instanceof SymbolInstance && isControl(element.name)) {
-        return CreateCustomeControl(element);
+        return CreateCustomeControl(element, tab);
     }
     else if (element instanceof SymbolInstance && isLayout(element.name)) {
-        return CreateLayout(element);
+        return CreateLayout(element, tab);
     }
     else if (element instanceof SymbolInstance) {
-        return CreateControl(element);
+        return CreateControl(element, tab);
     }
     else if (element instanceof Group) {
-        return CreateLayout(element);
+        return CreateLayout(element, tab);
     }
     else{
         return "";
@@ -111,7 +113,7 @@ function getTabPosition(spaces) {
     return res;
 }
 
-function CreateCustomeControl(ele) {
+function CreateCustomeControl(ele, tab) {
     var cfk = window.localStorage.getItem("component_framework");
     if (cfk == "blazorise") return CreateBlazorise(ele);
 }

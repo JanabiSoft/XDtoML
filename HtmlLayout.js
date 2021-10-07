@@ -2,57 +2,59 @@ const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance, Rep
 const {GenerateShape} = require("./HtmlShape.js");
 const {CreateControl, CreateTextBlock, GetControlPathProperties} = require("./HtmlControl.js");
 const {CreateBlazorise} = require("./blazorise.js");
-const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition} = require("./Common.js");
+const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition, GetColors} = require("./Common.js");
 const {CreateUserControl} = require("./UserControl.js");
 
 
-function createLayout(item) {
+function createLayout(item, tab) {
     if (item != null) {
         var itemTag = getLayoutTag(item);
         var style = "style=\"" + GenerateStyle(item) + "\"";
         var attrib = GenerateAttributes(item);
         console.log("creating layout: " + item.name);
+        tab += "\t";
 
         var children = item.children;
         var content = "";
         if(children.length > 1) {
             children.forEach(function (element, i) {
-                
-                if (element instanceof Rectangle || element instanceof Ellipse || element instanceof Polygon || element instanceof Line) {
-                    content += "\n\t\t" + GenerateShape(element);
+                if(element instanceof Rectangle && element.name == "frame"){
+                    content += "\n" + tab + createBox(element, tab);
+                }
+                else if (element instanceof Rectangle || element instanceof Ellipse || element instanceof Polygon || element instanceof Line) {
+                    content += "\n\t" + tab + GenerateShape(element, tab);
                 }
                 else if (element instanceof Text) {
-                    content += "\n\t\t" + CreateTextBlock(element);
+                    content += "\n" + tab + CreateTextBlock(element, tab);
                 }
                 else if (element instanceof Path) {
-                    if (element.name != "Footprint") {
-                        content += GetControlPathProperties(element, itemTag);
-                    }
+                    content += "\n" + tab + GenerateShape(element, tab);
+                    // if (element.name != "Footprint") {
+                    //     content += GetControlPathProperties(element, itemTag);
+                    // }
+                    // else content += GenerateShape(element, tab);
                 }
                 else if (element instanceof SymbolInstance && IsCustomeControl(element.name)) {
-                    content += "\n\t" + CreateBlazorise(element);
+                    content += "\n\t" + tab + CreateBlazorise(element);
                 }
                 else if (element instanceof SymbolInstance && IsUserControl(element.name)) {
-                    content += "\n\t\t" + CreateUserControl(element);
+                    content += "\n\t\t" + tab + CreateUserControl(element, tab);
                 }
                 else if (element instanceof SymbolInstance) {
-                    content += "\n\t\t" + CreateControl(element);
+                    content += "\n\t\t" + tab + CreateControl(element, tab);
                 }
                 else if (element instanceof Group) {
-                    content += "\t\t" + createLayout(element);
+                    content += "\n" + tab + createLayout(element, tab);
                 }
                 else if (element instanceof RepeatGrid) {
-                    content += "\t\t" + createGrid(element);
+                    content += "\t\t" + tab + createGrid(element, tab);
                 }
-
-                 
             });
-
         }
         else{
         }
 
-        return "<" + itemTag + " " + attrib + " " + style + ">" + content + "\n\t</" + itemTag + ">";
+        return "<" + itemTag + " " + attrib + " " + style + ">\t" + tab + content + "\n" + tab + "</" + itemTag + ">";
     }
 }
 
@@ -72,7 +74,6 @@ function createGrid(item) {
                 content += "\t\t<div class=\"grid-item\">\n" + createLayout(element) + "\n</div>";
                 
             });
-
         }
         else{
         }
@@ -82,6 +83,15 @@ function createGrid(item) {
 
         return result;
     }
+}
+
+function createBox(item, tab) {
+    console.log("creating frame: " + item.name);
+    var itemTag = "div";
+    var style = "style=\"" + GenerateStyle(item) + GetColors(item) + "\"";
+    var attrib = GenerateAttributes(item);
+
+    return "<" + itemTag + " " + attrib + " " + style + ">" + "</" + itemTag + ">";
 }
 
 function getLayoutTag(item) {

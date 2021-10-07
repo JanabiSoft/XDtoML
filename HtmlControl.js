@@ -5,9 +5,11 @@ const {GenerateStyle} = require("./Common.js");
 const {CreateText} = require("./Text.js");
 
 
-function createControl(item) {
+function createControl(item, tab) {
    
     if (item != null) {
+        tab += "\t";
+
         var type = getControlType(item);
         var itemName = item.name.toLowerCase().split(" ").join("");
         console.log("creating control: " + type + " : " + itemName );
@@ -42,10 +44,10 @@ function createControl(item) {
                         content += CreateShape("polygon", element);
                     }
                     else if (element instanceof Line) {
-                        content += "\t\t\t" + CreateShape("line", element);
+                        content += tab + "\t\t\t" + CreateShape("line", element);
                     }
                     else if (element instanceof Text) {
-                        content += "\t\t\t" + createTextBlock(element);
+                        content += tab + "\t\t\t" + createTextBlock(element);
                     }
                     else if (element instanceof Path) {
                         if (element.name != "Footprint") {
@@ -64,12 +66,12 @@ function createControl(item) {
 
             style += generalProps + "\"";
             result = ele + " " + style + ">";
-            result += content + "\n\t\t</" + type + ">\n";
+            result += content + "\n\t\t" + tab + "</" + type + ">\n";
         } 
         else if (isGroupControl(type)){
             style += getControlSpecificProperties(type, item);
             content = getControlChildren(item);
-            result = "<" + type + " " + style + " >\n" + content + "\n\t\t</" + type + ">";
+            result = "<" + type + " " + style + " >\n" + content + "\n\t\t" + tab + "</" + type + ">";
         }
         else {
             //getting specific proeprties
@@ -99,9 +101,7 @@ function createControl(item) {
                     else if (element instanceof Group) {
                         specificProps += getControlPropertiesFromGroup(element, type);
                     }
-                 
                 });
-    
             }
             else{
                 if (type == "HyperlinkButton") {
@@ -225,7 +225,7 @@ function isGroupControl(type) {
     else return false;
 }
 
-function createTextBlock(item) {
+function createTextBlock(item, tab) {
     var txt = item.text;
     var textColor = "color:" + GetColors(item);
     var style = "style=\"" + GenerateStyle(item) + textColor + "\"" ;
@@ -330,7 +330,6 @@ function getStyle(item) {
     if(item instanceof Text) style += "font-size:" + item.fontSize + "px;";
 
     return style + "\"";
-
 }
 
 function createRadioButtons(item) {

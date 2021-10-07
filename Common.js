@@ -15,7 +15,7 @@ function isUserControl(type) {
 }
 
 function generateAttributes(ele) {
-    var id = " id=\"" + ele.name + "\"";
+    var id = "id=\"" + ele.name + "\"";
     return id;
 }
 
@@ -27,7 +27,28 @@ function generateStyle(item) {
     genProps += "width:" + width + "px;";
     genProps += "height:" + height + "px;";
     var position = getPosition(item);
+
+    //genProps += getMargin(item);
+    if(item.cornerRadii != null) genProps += getCornerRadii(item.cornerRadii);
+
     return genProps + position;
+}
+
+function GetColors(item) {
+    var stroke;
+    var fill;
+    var result;
+    if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
+    if (item.fill != null) fill = item.fill.value.toString(16).slice(2);
+
+    if(stroke != undefined){
+        result += " stroke: #" + stroke + ";";
+        if(item.storkeWidth != undefined) result += "stroke-width:"+ item.storkeWidth + "px;";
+        else result += "stroke-width:1px;";
+    } 
+    if(fill != undefined && !(item instanceof Line)) result += " fill: #" + fill + ";";
+    console.log("fill color test is: " + result);
+    return result;
 }
 
 function getTextColor(item) {
@@ -44,10 +65,26 @@ function getColors(item) {
 function getPosition(item) {
     var parentX = item.parent.localBounds.x;
     var parentY = item.parent.localBounds.y;
-    var x = item.boundsInParent.x - parentX;
-    var y = item.boundsInParent.y - parentY;
-    
-    return "position:absolute;left:" + x.toString() + "px;top: " + y.toString() + "px;";
+    var x = Math.round(item.boundsInParent.x - parentX).toString();
+    var y = Math.round(item.boundsInParent.y - parentY).toString();
+
+    return "position:absolute;left:" + x + "px;top: " + y + "px;";
+}
+
+function getMargin(item) {
+    var x = item.boundsInParent.x;
+    var y = item.boundsInParent.y;
+
+    return " margin-left:" + x.toString() + "px;" + " margin-top: " + y.toString() + "px;";
+}
+
+function getCornerRadii(radii) {
+    var result = "";
+    if (radii.topLeft != 0) result = "border-radius: " + radii.topLeft + "px;";
+    if (radii.topRight != 0) result = "border-radius: " + radii.topRight + "px;";
+    if (radii.bottomRight != 0) result = "border-radius: " + radii.bottomRight + "px;";
+    if (radii.bottomLeft != 0) result = "border-radius: " + radii.bottomLeft + "px;";
+    return result;
 }
 
 module.exports = {
@@ -57,6 +94,7 @@ module.exports = {
     GenerateStyle: generateStyle,
     GetTextColor: getTextColor,
     GetColors:getColors,
-    GetPosition: getPosition
-
+    GetPosition: getPosition,
+    GetMargin: getMargin,
+    GetCornerRadii: getCornerRadii
 };

@@ -1,6 +1,7 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
+const {GetCornerRadii} = require("./Common.js");
 
-function generateShape(item) {
+function generateShape(item, tab) {
     var result = "";
     var ele = "";
     var props = "";
@@ -16,17 +17,19 @@ function generateShape(item) {
     console.log("creating Shape: " + item.constructor.name + ":" + item.name);
 
     if (item != null) {
-        if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
-        if (item.fill != null) fill = item.fill;
+        tab += "\t";
 
-        var svgEnd = "\t</svg>";
+        if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
+        if (item.fill != null) fill = item.fill.value.toString(16).slice(2);
+
+        var svgEnd = "</svg>";
     
         if (item instanceof Rectangle) {
             tag = "rect";
             svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
             props += "width=\"" + item.width + "\"";
             props += " height=\"" + item.height + "\"";
-            props += getCornerRadii(item.cornerRadii);
+            props += GetCornerRadii(item.cornerRadii);
         } 
         else if(item instanceof Ellipse) {
             tag = "ellipse";
@@ -39,7 +42,6 @@ function generateShape(item) {
         else if(item instanceof Polygon){
             svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
             tag = "polygon";
-
         }
         else if(item instanceof Line){
             svgStart = "<svg height=\"" + item.globalDrawBounds.height + "px;\" width=\"" + item.globalDrawBounds.width + "px;\" ";
@@ -56,6 +58,12 @@ function generateShape(item) {
             props += " y1=\"" + y + "\"";
             props += " y2=\"" +  y2 + "\"";
         }
+        else if(item instanceof Path){
+            tag = "path";
+            var d = item.pathData;
+            svgStart = "<svg height=\"" + Math.round(item.globalDrawBounds.height) + "\" width=\"" + item.globalDrawBounds.width + "\" ";
+            props += " d=\"" + d + "\"";
+        }
 
         svgStyle += getMargin(item);
 
@@ -69,9 +77,9 @@ function generateShape(item) {
         eleStyle += "\"";
         svgStyle += "\"";
 
-        ele = "\t\t<" + tag;
-        if(tag == "polygon") result = svgStart + " " + svgStyle + ">\n@*" + ele + " " + props + " " + eleStyle + "/>*@\n\t" + svgEnd;
-        else result = svgStart + " " + svgStyle + ">\n\t" + ele + " " + props + " " + eleStyle + "/>\n\t" + svgEnd;
+        ele = "<" + tag;
+        if(tag == "polygon") result = svgStart + " " + svgStyle + ">\n@*" + ele + " " + props + " " + eleStyle + "/>*@\n\t" + tab + svgEnd;
+        else result = svgStart + " " + svgStyle + ">\n" + tab + ele + " " + props + " " + eleStyle + "/>\n" + svgEnd;
         return result;
     }
 }
@@ -81,15 +89,6 @@ function getMargin(item) {
     var x = item.boundsInParent.x;
     var y = item.boundsInParent.y;
     return "position:absolute;left:" + x.toString() + "px;top:" + y.toString() + "px;";
-}
-
-function getCornerRadii(radii) {
-    var result = "";
-    if (radii.topLeft != 0) result += " rx=\"" + radii.topLeft + "\"";
-    if (radii.topRight != 0) result += " rx=\"" + radii.topRight + "\"";
-    if (radii.bottomRight != 0) result += " ry=\"" + radii.bottomRight + "\"";
-    if (radii.bottomLeft != 0) result += " ry=\"" + radii.bottomLeft + "\"";
-    return result;
 }
 
 function getShapeTag(shape) {
