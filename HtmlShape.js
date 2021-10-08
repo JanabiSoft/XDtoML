@@ -66,7 +66,7 @@ function generateShape(item, tab) {
 
         containerStyle += getMargin(item);
 
-        elementStyle += GetColors(item);
+        elementStyle += getShapeColors(item);
 
         elementStyle += "\"";
         containerStyle += "\"";
@@ -99,6 +99,25 @@ function getShapeTag(shape) {
             return "rect";
     }
 }
+
+function getShapeColors(item) {
+    console.log("getting colors");
+    var result = "";
+    if (item.stroke != null) {
+        result = "stroke:#" + item.stroke.value.toString(16).slice(2) + ";";
+    }
+    if (item.storkeWidth != undefined) {
+        result += "stroke-width:" + item.storkeWidth + "px;";
+    }
+    if (item.fill != null) {
+        result += "fill:#" + item.fill.value.toString(16).slice(2) + ";";
+        //result += "red";
+    }
+
+    return result;
+
+}
+
 
 module.exports = {
     GenerateShape: generateShape

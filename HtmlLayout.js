@@ -4,6 +4,7 @@ const {CreateControl, CreateTextBlock, GetControlPathProperties} = require("./Ht
 const {CreateBlazorise} = require("./blazorise.js");
 const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition, GetColors} = require("./Common.js");
 const {CreateUserControl} = require("./UserControl.js");
+const { GenerateSVG } = require("./Image.js");
 
 
 function createLayout(item, tab) {
@@ -44,7 +45,8 @@ function createLayout(item, tab) {
                     content += "\n\t\t" + internalTab + CreateControl(element, internalTab);
                 }
                 else if (element instanceof Group) {
-                    content += "\n" + internalTab + createLayout(element, internalTab);
+                    if(element.name.endsWith("-symbol")) content += "\n" + internalTab + GenerateSVG(element, internalTab);
+                    else content += "\n" + internalTab + createLayout(element, internalTab);
                 }
                 else if (element instanceof RepeatGrid) {
                     content += "\n\t\t" + internalTab + createGrid(element, internalTab);

@@ -46,11 +46,39 @@ function generateImage(item, tab) {
     }
 }
 
+function generateSVG(item, tab) {
+    console.log("generating svg started: " + item.name);
+    tab += "\t";
+
+    var result = "";
+    var eleStyle = "style=\"";
+    var stroke = "";
+    var fill;
+    var imageName;
+
+    var content = "";
+
+    if (item != null) {
+        imageName = item.name + ".svg";
+
+        eleStyle += GenerateStyle(item);
+
+        var tag = "img";
+
+        eleStyle += "\"";
+
+        result = "<" + tag + " src=\"" + imageName +  "\" " + eleStyle + "/>";
+        return result;
+    }
+}
+
+
 function hyperLink() {
     return "<a ";
 }
 
 module.exports = {
-    GenerateImage: generateImage
+    GenerateImage: generateImage,
+    GenerateSVG: generateSVG
     
 };
