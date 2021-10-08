@@ -3,6 +3,7 @@ const {GenerateShape} = require("./HtmlShape.js");
 const {GenerateAttributes, GetColors, GetTextColor} = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
 const {CreateText} = require("./Text.js");
+const { GetTextStyle } = require("./styles.js");
 
 
 function createControl(item, tab) {
@@ -155,7 +156,6 @@ function getControlTextProperties(tag, item) {
     }
     else if (tag == "ComboBox" && item.name == "Selected list item") {
         prop += " PlaceholderText=\"" + txt + "\"";
-
     }
     else if (tag == "ToggleSwitch" && !txt.includes("header")) {
         if(txt.includes("Off")) prop += " OffContent=\"" + txt + "\"";
@@ -227,7 +227,8 @@ function isGroupControl(type) {
 
 function createTextBlock(item, tab) {
     var txt = item.text;
-    var style = "style=\"" + GenerateStyle(item) + GetTextColor(item) + "\"" ;
+    var style = "style=\"" + GenerateStyle(item) + GetTextColor(item) + GetTextStyle(item) + "\"" ;
+    var textStyle = "";
     var attrib = GenerateAttributes(item);
     return "<span " + attrib + " " + style +">" + txt + "</span>";
 }

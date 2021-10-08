@@ -47,14 +47,14 @@ function createLayout(item, tab) {
                     content += "\n" + internalTab + createLayout(element, internalTab);
                 }
                 else if (element instanceof RepeatGrid) {
-                    content += "\t\t" + internalTab + createGrid(element, internalTab);
+                    content += "\n\t\t" + internalTab + createGrid(element, internalTab);
                 }
             });
         }
         else{
         }
 
-        return "<" + itemTag + " " + attrib + " " + style + tab + content + "\n" + tab + "</" + itemTag + ">";
+        return "<" + itemTag + " " + attrib + " " + style + ">" + content + "\n" + tab + "</" + itemTag + ">";
     }
 }
 

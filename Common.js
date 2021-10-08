@@ -69,7 +69,7 @@ function getPosition(item) {
     var x = Math.round(item.boundsInParent.x - parentX).toString();
     var y = Math.round(item.boundsInParent.y - parentY).toString();
 
-    return "position:absolute;left:" + x + "px;top: " + y + "px;";
+    return "position:absolute;left:" + x + "px;top:" + y + "px;";
 }
 
 function getMargin(item) {
