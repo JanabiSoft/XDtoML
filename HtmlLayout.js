@@ -5,6 +5,7 @@ const {CreateBlazorise} = require("./blazorise.js");
 const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition, GetColors} = require("./Common.js");
 const {CreateUserControl} = require("./UserControl.js");
 const { GenerateSVG } = require("./Image.js");
+const { CreateFontIcon } = require("./Text.js");
 
 
 function createLayout(item, tab) {
@@ -26,7 +27,8 @@ function createLayout(item, tab) {
                     content += "\n\t" + internalTab + GenerateShape(element, internalTab);
                 }
                 else if (element instanceof Text) {
-                    content += "\n" + internalTab + CreateTextBlock(element, internalTab);
+                    if (element.name.endsWith("-icon") ) content += "\n" + internalTab + CreateFontIcon(element, internalTab);
+                    else content += "\n" + internalTab + CreateTextBlock(element, internalTab);
                 }
                 else if (element instanceof Path) {
                     content += "\n" + internalTab + GenerateShape(element, internalTab);

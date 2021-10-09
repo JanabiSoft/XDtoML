@@ -1,9 +1,9 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = require("scenegraph");
 const {GenerateShape} = require("./HtmlShape.js");
-const {GenerateAttributes, GetColors, GetTextColor} = require("./Common.js");
+const {GenerateAttributes, GetColors, } = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
 const {CreateText} = require("./Text.js");
-const { GetTextStyle } = require("./styles.js");
+const { GetTextStyle, GetTextColor } = require("./styles.js");
 
 
 function createControl(item, tab) {

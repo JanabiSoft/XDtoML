@@ -52,10 +52,6 @@ function getColors(item) {
 
 }
 
-function getTextColor(item) {
-    if (item.fill != undefined) return "color: #" + item.fill.value.toString(16).slice(2) + ";";
-    else return "";
-}
 
 // function getColors(item) {
 //     if (item.fill != undefined) return "#" + item.fill.value.toString(16).slice(2) + ";";
@@ -93,7 +89,6 @@ module.exports = {
     IsUserControl: isUserControl,
     GenerateAttributes: generateAttributes,
     GenerateStyle: generateStyle,
-    GetTextColor: getTextColor,
     GetColors:getColors,
     GetPosition: getPosition,
     GetMargin: getMargin,
