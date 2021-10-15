@@ -14,14 +14,16 @@ function generateShape(item, tab) {
     var content = "";
     var tag = getShapeTag(item.constructor.name);
 
-    console.log("creating Shape: " + item.constructor.name + ":" + item.name);
+    console.log("17 creating Shape: " + item.constructor.name + ":" + item.name);
 
     if (item != null) {
         var containerEnd = "\n" + tab + "</svg>";
         tab += "\t";
 
         if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
-        if (item.fill != null) fill = item.fill.value.toString(16).slice(2);
+        if (item.fill != null) {
+            if(item.fill.value != undefined) fill = item.fill.value.toString(16).slice(2);
+        }
     
         if (item instanceof Rectangle) {
             tag = "rect";
@@ -79,10 +81,13 @@ function generateShape(item, tab) {
 }
 
 function getMargin(item) {
-    console.log(item.name + " : " + item.boundsInParent);
-    var x = item.boundsInParent.x;
-    var y = item.boundsInParent.y;
-    return "position:absolute;left:" + Math.round(x.toString()) + "px;top:" + Math.round(y.toString()) + "px;";
+    console.log("84" + item.name + " : " + item.boundsInParent);
+    if (item != undefined) {
+        var x = item.boundsInParent.x;
+        var y = item.boundsInParent.y;
+        return "position:absolute;left:" + Math.round(x.toString()) + "px;top:" + Math.round(y.toString()) + "px;";
+    }
+    return "";
 }
 
 function getShapeTag(shape) {
@@ -101,7 +106,7 @@ function getShapeTag(shape) {
 }
 
 function getShapeColors(item) {
-    console.log("getting colors");
+    console.log("109 getting colors");
     var result = "";
     if (item.stroke != null) {
         result = "stroke:#" + item.stroke.value.toString(16).slice(2) + ";";
@@ -110,12 +115,10 @@ function getShapeColors(item) {
         result += "stroke-width:" + item.storkeWidth + "px;";
     }
     if (item.fill != null) {
-        result += "fill:#" + item.fill.value.toString(16).slice(2) + ";";
-        //result += "red";
+        if(item.fill.value != undefined) result += "fill:#" + item.fill.value.toString(16).slice(2) + ";";
     }
 
     return result;
-
 }
 
 
