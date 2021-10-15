@@ -410,41 +410,46 @@ function CreateNavbar(item, tab) {
     var control = "<nav class=\"navbar navbar-expand-lg navbar-light bg-light\">\n";
     //base
     control += tab + "<div class=\"container-fluid\">\n";
-    control += tab + "\t<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
-    control += tab + "\t\t<span class=\"navbar-toggler-icon\"></span>\n";
-    control += tab + "\t</button>\n";
+    var end = tab + "</div>\n</nav>";
+    var internalTab = tab + "\t";
+
+    control += internalTab + "<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
+    control += internalTab + "\t<span class=\"navbar-toggler-icon\"></span>\n";
+    control += internalTab + "</button>\n";
+
 
     //menu
-    control += tab + "\t<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n";
+    control += internalTab + "<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n";
     var menu = item.children.at(1);
-    control += tab + "\t\t<ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\n";
-    var navItems = tab;
+    control += internalTab + "\t<ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\n";
+    var navItems = "";
 
-    var children = menu.children;
-    console.log("menu name: " + menu.name);
-    console.log("menu children: " + children.count);
+    console.log("menu name: " + menu.constructor.name + " : " + menu.name);
+    console.log("menu children: " + menu.children.length);
     
-    children.forEach(function (element, i) {
-        if(i == 0){
-            navItems = "<li class=\"nav-item\">\n";
-            navItems += "\t<a class=\"nav-link active\" aria-current=\"page\" href=\"#\">" + element.children.at(1).text + "</a>\n";
-        }
-        else if(element.name.endsWith("Dropdown")){
-            navItems = "<li class=\"nav-item dropdown\">\n";
-            navItems += "\t<a class=\"nav-link dropdown-toggle\" id=\"navbarDropdown\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" href=\"#\">" + element.children.at(1).text + "</a>\n";
-            navItems += "\t<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\n";
-			navItems += "\t\t<li><a class=\"dropdown-item\" href=\"#\">Action</a></li>\n";
-			navItems += "\t\t<li><hr class=\"dropdown-divider\"></li>\n";
-			navItems += "\t\t<li><a class=\"dropdown-item\" href=\"#\">Something else here</a></li>\n";
-			navItems += "\t</ul>\n";
+    menu.children.forEach(function (element, i) {
+        console.log("i: " + i);
+
+        // if(i == 0){
+        //     navItems += internalTab +"<li class=\"nav-item\">\n";
+        //     navItems += internalTab + "\t<a class=\"nav-link active\" aria-current=\"page\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+        // }
+        if(element.name.endsWith("Dropdown")){
+            navItems += internalTab + "\t\t<li class=\"nav-item dropdown\">\n";
+            navItems += internalTab + "\t\t\t<a class=\"nav-link dropdown-toggle\" id=\"navbarDropdown\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+            navItems += internalTab + "\t\t<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\n";
+			navItems += internalTab + "\t\t<li><a class=\"dropdown-item\" href=\"#\">Action</a></li>\n";
+			navItems += internalTab + "\t\t<li><hr class=\"dropdown-divider\"></li>\n";
+			navItems += internalTab + "\t\t<li><a class=\"dropdown-item\" href=\"#\">Something else here</a></li>\n";
+			navItems += internalTab + "\t</ul>\n";
         }
         else {
-            navItems = "<li class=\"nav-item\">\n";
-            navItems += "\t<a class=\"nav-link\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+            navItems += internalTab + "\t<li class=\"nav-item\">\n";
+            navItems += internalTab + "\t\t<a class=\"nav-link\" href=\"#\">" + element.children.at(1).text + "</a>\n";
         }
-        navItems += "</li>\n";
+        navItems += internalTab +"\t</li>\n";
     });
-    control += tab + navItems + "</ul>\n";
+    control += navItems + internalTab +"\t</ul>\n";
 
     if(item.children.count == 3){
         control += "<form class=\"d-flex\">\n" +
@@ -452,8 +457,8 @@ function CreateNavbar(item, tab) {
         "\t<button class=\"btn btn-outline-success\" type=\"submit\">Search</button>\n" +
         "</form>\n";
     }
-    control += tab + "\t</div>\n";
-    control += tab + "</div>";
+    control += internalTab + "</div>\n";
+    control += end;
 
     return control;
 }
