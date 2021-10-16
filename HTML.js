@@ -95,7 +95,7 @@ function createElement(element, tab) {
         return CreateControl(element, tab);
     }
     else if (element instanceof Group) {
-        if(element.name.endsWith("-symbol")) return GenerateSVG(element, tab);
+        if(element.name.endsWith("-symbol") | element.name.endsWith("-image")) return GenerateSVG(element, tab);
         else return CreateLayout(element, tab);
     }
     else if (element instanceof RepeatGrid) {

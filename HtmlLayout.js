@@ -47,7 +47,7 @@ function createLayout(item, tab) {
                     content += "\n\t\t" + internalTab + CreateControl(element, internalTab);
                 }
                 else if (element instanceof Group) {
-                    if(element.name.endsWith("-symbol")) content += "\n" + internalTab + GenerateSVG(element, internalTab);
+                    if(element.name.endsWith("-symbol") | element.name.endsWith("-image")) content += "\n" + internalTab + GenerateSVG(element, internalTab);
                     else content += "\n" + internalTab + createLayout(element, internalTab);
                 }
                 else if (element instanceof RepeatGrid) {
