@@ -81,6 +81,7 @@ function generateImage(item, tab) {
         eleStyle += "\"";
 
         result = "<" + tag + " src=\"" + imageName +  "\" " + eleStyle + "/>";
+        console.log("result: " + result);
         return result;
     }
 }

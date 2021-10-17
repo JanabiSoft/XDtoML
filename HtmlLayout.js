@@ -1,10 +1,11 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance, RepeatGrid} = require("scenegraph");
+const Image = require("scenegraph").ImageFill;
 const {GenerateShape} = require("./HtmlShape.js");
 const {CreateControl, CreateTextBlock, GetControlPathProperties} = require("./HtmlControl.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition, GetColors} = require("./Common.js");
 const {CreateUserControl} = require("./UserControl.js");
-const { GenerateSVG } = require("./Image.js");
+const {GenerateImage, GenerateSVG} = require("./Image.js");
 const { CreateFontIcon } = require("./Text.js");
 
 
@@ -23,6 +24,7 @@ function createLayout(item, tab) {
                 if(element instanceof Rectangle && element.name == "frame"){
                     content += "\n" + internalTab + createBox(element, internalTab);
                 }
+                else if (element instanceof Rectangle && element.fill instanceof Image) content += "\n" + internalTab + GenerateImage(element, internalTab);
                 else if (element instanceof Rectangle || element instanceof Ellipse || element instanceof Polygon || element instanceof Line) {
                     content += "\n\t" + internalTab + GenerateShape(element, internalTab);
                 }
@@ -44,7 +46,7 @@ function createLayout(item, tab) {
                     content += "\n\t\t" + internalTab + CreateUserControl(element, internalTab);
                 }
                 else if (element instanceof SymbolInstance) {
-                    content += "\n\t\t" + internalTab + CreateControl(element, internalTab);
+                    content += "\n" + internalTab + CreateControl(element, internalTab);
                 }
                 else if (element instanceof Group) {
                     if(element.name.endsWith("-symbol") | element.name.endsWith("-image")) content += "\n" + internalTab + GenerateSVG(element, internalTab);

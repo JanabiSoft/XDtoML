@@ -1,6 +1,6 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = require("scenegraph");
 const {GenerateShape} = require("./HtmlShape.js");
-const {GenerateAttributes, GetColors, } = require("./Common.js");
+const {GenerateAttributes, GetColors, GetCornerRadii, } = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
 const {CreateText} = require("./Text.js");
 const { GetTextStyle, GetTextColor } = require("./styles.js");
@@ -408,7 +408,13 @@ function CreatePageHeader(item) {
  
 function CreateNavbar(item, tab) {
     console.log("409 creating navigation bar");
-    var control = "<nav class=\"navbar navbar-expand-lg navbar-light bg-light\">\n";
+    var backColor = item.children.at(0).fill.value.toString(16).slice(2);
+    var navStyle =" style=\"background-color:#" + backColor + ";";
+    navStyle += GenerateStyle(item);
+    if(item.children.at(0).cornerRadii != 0) navStyle += GetCornerRadii(item.children.at(0).cornerRadii);
+    var forground = item.children.at(1).children.at(0).children.at(1).fill.value.toString(16).slice(2);
+    
+    var control = "<nav class=\"navbar navbar-expand-lg navbar-light\"" + navStyle +  "\">\n";
     //base
     control += tab + "<div class=\"container-fluid\">\n";
     //var end = tab + "</div>\n</nav>";

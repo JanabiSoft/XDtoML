@@ -29,7 +29,8 @@ function generateStyle(item) {
     var position = getPosition(item);
 
     //genProps += getMargin(item);
-    if(item.cornerRadii != null) genProps += getCornerRadii(item.cornerRadii);
+    console.log(item.cornerRadii);
+    if(item.cornerRadii != undefined) genProps += getCornerRadii(item.cornerRadii);
 
     return genProps + position;
 }

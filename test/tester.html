@@ -5,48 +5,49 @@
 	</head>
 	<body>
         <img src="home-background-image.png" style=" stroke:#707070;stroke-width:1px;width:1280px;height:4000px;position:absolute;left:0px;top:0px;opacity:1;"/>
-        <div id="logo-span" style="width:250px;height:66px;position:absolute;left:56px;top:51px;">
-	        <span id="JanabiSoft" style="width:178px;height:61px;position:absolute;left:81px;top:11px;color: #ffc107;font-size:32;">JanabiSoft</span>
-		        <svg height="64" width="64" style="position:absolute;left:56px;top:51px;">
-	        	<rect width="64" height="64" style="stroke:#707070;"/>
-	        </svg>
+        <div id="header" style="width:1176px;height:68px;position:absolute;left:56px;top:49px;">
+	        <div id="logo-span" style="width:250px;height:66px;position:absolute;left:0px;top:2px;">
+		        <span id="JanabiSoft" style="width:178px;height:61px;position:absolute;left:81px;top:11px;color: #ffc107;font-size:32;">JanabiSoft</span>
+		        <img src="logo-image.png" style=" stroke:#707070;stroke-width:1px;width:64px;height:64px;position:absolute;left:0px;top:0px;opacity:1;"/>
+	        </div>
+	        <nav class="navbar navbar-expand-lg navbar-light" 
+			style="background-color:#007bff;width:681px;height:56px;position:absolute;left:495px;top:0px;border-radius: 4px;color:red">
+	        	<div class="container-fluid">
+	        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	        			<span class="navbar-toggler-icon"></span>
+	        		</button>
+	        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+	        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	        				<li class="nav-item">
+	        					<a class="nav-link" href="#">Credits</a>
+	        				</li>
+	        				<li class="nav-item">
+	        					<a class="nav-link" href="#">Contact</a>
+	        				</li>
+	        				<li class="nav-item">
+	        					<a class="nav-link" href="#">Support</a>
+	        				</li>
+	        				<li class="nav-item">
+	        					<a class="nav-link" href="#">About</a>
+	        				</li>
+	        				<li class="nav-item dropdown">
+	        					<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#">Apps</a>
+	        					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+	        						<li><a class="dropdown-item" href="#">Action</a></li>
+	        						<li><hr class="dropdown-divider"></li>
+	        						<li><a class="dropdown-item" href="#">Something else here</a></li>
+	        					</ul>
+	        				</li>
+	        				<li class="nav-item">
+	        					<a class="nav-link" href="#">Home</a>
+	        				</li>
+	        			</ul>
+	        		</div>
+	        	</div>
+	        	</nav>
         </div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        	<div class="container-fluid">
-        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        			<span class="navbar-toggler-icon"></span>
-        		</button>
-        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        				<li class="nav-item">
-        					<a class="nav-link" href="#">Credits</a>
-        				</li>
-        				<li class="nav-item">
-        					<a class="nav-link" href="#">Contact</a>
-        				</li>
-        				<li class="nav-item">
-        					<a class="nav-link" href="#">Support</a>
-        				</li>
-        				<li class="nav-item">
-        					<a class="nav-link" href="#">About</a>
-        				</li>
-        				<li class="nav-item dropdown">
-        					<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#">Apps</a>
-        					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-        						<li><a class="dropdown-item" href="#">Action</a></li>
-        						<li><hr class="dropdown-divider"></li>
-        						<li><a class="dropdown-item" href="#">Something else here</a></li>
-        					</ul>
-        				</li>
-        				<li class="nav-item">
-        					<a class="nav-link" href="#">Home</a>
-        				</li>
-        			</ul>
-        		</div>
-        	</div>
-        	</nav>
-        <div id="header-section" style="width:1091px;height:312px;position:absolute;left:93px;top:229px;">
-	        <img src="header-svg.svg" style="width:462px;height:312px;position:absolute;left:629px;top:0px;"/>
+        <div id="intro-section" style="width:1091px;height:312px;position:absolute;left:93px;top:229px;">
+	        <img src="header-image.svg" style="width:462px;height:312px;position:absolute;left:629px;top:0px;"/>
 	        <span id="header-title" style="width:438px;height:43px;position:absolute;left:0px;top:51px;color: #0069d9;font-size:32;">Apps That Organize your Life</span>
 	        <span id="header-text" style="width:458px;height:192px;position:absolute;left:0px;top:105px;color: #343a40;font-size:24;">Modern Life is too much complicated, 
 there are too many tasks, 
@@ -58,7 +59,7 @@ JanabiSoft apps to keep you in control.</span>
         <div id="apps-section" style="width:1070px;height:800px;position:absolute;left:93px;top:1081px;">
 	        <span id="Browse our Apps" style="width:256px;height:43px;position:absolute;left:415px;top:0px;color: #0069d9;font-size:32;">Browse our Apps</span>
 	        <div id="apps-cards" style="width:1070px;height:698px;position:absolute;left:0px;top:108px;">
-				        <div class="card">
+		        <div class="card">
 		        	<div class="container-fluid">
 		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		        			<span class="navbar-toggler-icon"></span>
@@ -69,7 +70,7 @@ JanabiSoft apps to keep you in control.</span>
 		        		</div>
 		        	</div>
 		        	</nav>
-				        <div class="card">
+		        <div class="card">
 		        	<div class="container-fluid">
 		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		        			<span class="navbar-toggler-icon"></span>
@@ -80,7 +81,7 @@ JanabiSoft apps to keep you in control.</span>
 		        		</div>
 		        	</div>
 		        	</nav>
-				        <div class="card">
+		        <div class="card">
 		        	<div class="container-fluid">
 		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		        			<span class="navbar-toggler-icon"></span>
@@ -91,7 +92,7 @@ JanabiSoft apps to keep you in control.</span>
 		        		</div>
 		        	</div>
 		        	</nav>
-				        <div class="card">
+		        <div class="card">
 		        	<div class="container-fluid">
 		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		        			<span class="navbar-toggler-icon"></span>
@@ -102,7 +103,7 @@ JanabiSoft apps to keep you in control.</span>
 		        		</div>
 		        	</div>
 		        	</nav>
-				        <div class="card">
+		        <div class="card">
 		        	<div class="container-fluid">
 		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		        			<span class="navbar-toggler-icon"></span>
@@ -113,7 +114,7 @@ JanabiSoft apps to keep you in control.</span>
 		        		</div>
 		        	</div>
 		        	</nav>
-				        <div class="card">
+		        <div class="card">
 		        	<div class="container-fluid">
 		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		        			<span class="navbar-toggler-icon"></span>
@@ -130,15 +131,13 @@ JanabiSoft apps to keep you in control.</span>
 	        <span id="about-text" style="width:1039px;height:144px;position:absolute;left:0px;top:67px;color: #707070;font-size:24;">Business is the activity of making one’s living or making money by producing or buying and selling goods or services. Simply put, it is any activity or enterprise entered into for profit. It does not mean it is a company, a corporation, partnership, or have any such formal organization, but it can range from a street peddler to General Motors.The term is also often used colloquially but not by lawyers or public officials to refer to a company, but this article will not deal with that sense of the word.</span>
 	        <span id="about-title" style="width:204px;height:67px;position:absolute;left:0px;top:0px;color: #0069d9;font-size:32;">Who We Are?
 </span>
-			        <button id="more-button" style="width:111px;height:37px;position:absolute;left:0px;top:212px;color:background-color:">undefined</button>
+	        <button id="more-button" style="width:111px;height:37px;position:absolute;left:0px;top:212px;color:background-color:">undefined</button>
         </div>
         <div id="features-section" style="width:1155px;height:500px;position:absolute;left:77px;top:581px;">
 	        <span id="
 We have many apps that all together will improve every aspect of your life." style="width:564px;height:106px;position:absolute;left:591px;top:181px;color: #707070;font-size:20;">
 We have many apps that all together will improve every aspect of your life.</span>
-		        <svg height="500.2099609375" width="460" style="position:absolute;left:77px;top:581px;">
-	        	<rect width="460" height="500.20977783203125" style="stroke:#707070;"/>
-	        </svg>
+	        <img src="feature-new-01.png" style=" stroke:#707070;stroke-width:1px;width:460px;height:500px;position:absolute;left:0px;top:0px;opacity:1;"/>
 	        <span id="Increase your productivity with 
 JanabiSoft apps" style="width:478px;height:86px;position:absolute;left:677px;top:84px;color: #0069d9;font-size:32;">Increase your productivity with 
 JanabiSoft apps</span>
@@ -147,9 +146,7 @@ JanabiSoft apps</span>
 		        <svg height="429" width="556" style="position:absolute;left:640px;top:2373px;">
 	        	<rect width="538" height="411"border-radius: 10px; style="stroke:#707070;fill:#ffffff;"/>
 	        </svg>
-		        <svg height="301" width="479" style="position:absolute;left:109px;top:2427px;">
-	        	<rect width="479" height="301" style="stroke:#707070;"/>
-	        </svg>
+	        <img src="benefits-image.png" style=" stroke:#707070;stroke-width:1px;width:479px;height:301px;position:absolute;left:0px;top:169px;opacity:1;"/>
 	        <span id="benefits-title" style="width:352px;height:86px;position:absolute;left:0px;top:0px;color: #0069d9;font-size:32;">Why Choose Our Apps?
 </span>
 	        <span id="benefits-text" style="width:1031px;height:39px;position:absolute;left:0px;top:47px;color: #707070;font-size:20;">There are many many things, why you should choose our apps, here are a few of them:</span>
