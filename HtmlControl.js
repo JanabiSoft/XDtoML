@@ -1,19 +1,27 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = require("scenegraph");
-const {CreateShape} = require("./HtmlShape.js");
-const {GenerateAttributes, GetColors} = require("./Common.js");
+const {GenerateShape} = require("./HtmlShape.js");
+const {GenerateAttributes, GetColors, GetCornerRadii, } = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
+const {CreateText} = require("./Text.js");
+const { GetTextStyle, GetTextColor } = require("./styles.js");
 
-function createControl(item) {
+
+function createControl(item, tab) {
    
     if (item != null) {
+        tab += "\t";
+
         var type = getControlType(item);
         var itemName = item.name.toLowerCase().split(" ").join("");
-        console.log("creating control: " + type + " : " + itemName );
+        console.log("16 creating control: " + item.constructor.name + " type: " + type + " name: " + itemName );
         if (itemName.includes("hyperlink")) return createHyperlink(item);
         else if(itemName.includes("accentbutton") ) return createButton(item);
         else if(itemName.includes("radiobuttongroup") ) return createRadioButtons(item);
         else if(itemName.includes("combobox") ) return createSelect(item);
         else if(itemName.includes("button") ) return createButton(item);
+        else if(itemName.includes("pageheader")) return CreatePageHeader(item);
+        else if(itemName.includes("navbar")) return CreateNavbar(item, tab);
+        else if(itemName.includes("-card")) return CreateCard(item, tab);
 
         var style = getStyle(item);
         var attrib = getAttributes(item);
@@ -30,19 +38,19 @@ function createControl(item) {
                     content += "\n";
                     
                     if (element instanceof Rectangle) {
-                        content += CreateShape("rect", element);
+                        content += GenerateShape("rect", element);
                     }
                     else if (element instanceof Ellipse) {
-                        content += CreateShape("ellipse", element);
+                        content += GenerateShape("ellipse", element);
                     }
                     else if (element instanceof Polygon) {
-                        content += CreateShape("polygon", element);
+                        content += GenerateShape("polygon", element);
                     }
                     else if (element instanceof Line) {
-                        content += "\t\t\t" + CreateShape("line", element);
+                        content += tab + "\t\t\t" + GenerateShape("line", element);
                     }
                     else if (element instanceof Text) {
-                        content += "\t\t\t" + createTextBlock(element);
+                        content += tab + "\t\t\t" + createTextBlock(element);
                     }
                     else if (element instanceof Path) {
                         if (element.name != "Footprint") {
@@ -61,12 +69,12 @@ function createControl(item) {
 
             style += generalProps + "\"";
             result = ele + " " + style + ">";
-            result += content + "\n\t\t</" + type + ">\n";
+            result += content + "\n\t\t" + tab + "</" + type + ">\n";
         } 
         else if (isGroupControl(type)){
             style += getControlSpecificProperties(type, item);
             content = getControlChildren(item);
-            result = "<" + type + " " + style + " >\n" + content + "\n\t\t</" + type + ">";
+            result = "<" + type + " " + style + " >\n" + content + "\n\t\t" + tab + "</" + type + ">";
         }
         else {
             //getting specific proeprties
@@ -74,16 +82,16 @@ function createControl(item) {
             if(item.children.length > 1) {
                 item.children.forEach(function (element, i) {
                     if (element instanceof Rectangle && element.name != "Footprint") {
-                        specificProps += CreateShape("rect", element);
+                        specificProps += GenerateShape("rect", element);
                     }
                     else if (element instanceof Ellipse) {
-                        specificProps += CreateShape("ellipse", element);
+                        specificProps += GenerateShape("ellipse", element);
                     }
                     else if (element instanceof Polygon) {
-                        specificProps += CreateShape("polygon", element);
+                        specificProps += GenerateShape("polygon", element);
                     }
                     else if (element instanceof Line) {
-                        specificProps += CreateShape("line", element);
+                        specificProps += GenerateShape("line", element);
                     }
                     else if (element instanceof Text) {
                         text += element.text;
@@ -96,9 +104,7 @@ function createControl(item) {
                     else if (element instanceof Group) {
                         specificProps += getControlPropertiesFromGroup(element, type);
                     }
-                 
                 });
-    
             }
             else{
                 if (type == "HyperlinkButton") {
@@ -130,7 +136,8 @@ function getControlType(item) {
     else if(name.includes("pagetitle")) return "Custome";
     else if(name.includes("pagetitle")) return "Custome";
     else if(name.includes("button") || name.includes("accentbutton")) return "Button";
-
+    else if(name.includes("pageheader")) return "PageHeader";
+    else if(name.includes("navbar")) return "Navbar";
     else return "unknown";
 }
 
@@ -151,7 +158,6 @@ function getControlTextProperties(tag, item) {
     }
     else if (tag == "ComboBox" && item.name == "Selected list item") {
         prop += " PlaceholderText=\"" + txt + "\"";
-
     }
     else if (tag == "ToggleSwitch" && !txt.includes("header")) {
         if(txt.includes("Off")) prop += " OffContent=\"" + txt + "\"";
@@ -221,12 +227,12 @@ function isGroupControl(type) {
     else return false;
 }
 
-function createTextBlock(item) {
+function createTextBlock(item, tab) {
     var txt = item.text;
-    var textColor = "color:" + GetColors(item);
-    var style = "style=\"" + GenerateStyle(item) + textColor + "\"" ;
+    var style = "style=\"" + GenerateStyle(item) + GetTextColor(item) + GetTextStyle(item) + "\"" ;
+    var textStyle = "";
     var attrib = GenerateAttributes(item);
-    return "<label " + attrib + " " + style +">" + txt + "</label>";
+    return "<span " + attrib + " " + style +">" + txt + "</span>";
 }
 
 function getControlSpecificProperties(type, item) {
@@ -326,7 +332,6 @@ function getStyle(item) {
     if(item instanceof Text) style += "font-size:" + item.fontSize + "px;";
 
     return style + "\"";
-
 }
 
 function createRadioButtons(item) {
@@ -387,9 +392,152 @@ function createButton(item) {
 
     return "<button " + attributes + style + "\">" + label + '</button>';
 }
+
+function CreatePageHeader(item) {
+    console.log("creating page header");
+    var title = item.children.at(0).text;
+    var border = item.children.at(1);
+    var titleColor = "color:" + GetColors(item.children.at(0));
+
+    var control = "<div>\n";
+    control += CreateText(item.children.at(0)) + "\n";
+    control += GenerateShape(item.children.at(1)) + "\n";
+    control += "</div>";
+
+}
  
+function CreateNavbar(item, tab) {
+    console.log("409 creating navigation bar");
+    var backColor = item.children.at(0).fill.value.toString(16).slice(2);
+    var navStyle =" style=\"background-color:#" + backColor + ";";
+    navStyle += GenerateStyle(item);
+    if(item.children.at(0).cornerRadii != 0) navStyle += GetCornerRadii(item.children.at(0).cornerRadii);
+    var forground = item.children.at(1).children.at(0).children.at(1).fill.value.toString(16).slice(2);
+    
+    var control = "<nav class=\"navbar navbar-expand-lg navbar-light\"" + navStyle +  "\">\n";
+    //base
+    control += tab + "<div class=\"container-fluid\">\n";
+    //var end = tab + "</div>\n</nav>";
+    var internalTab = tab + "\t";
+
+    control += internalTab + "<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
+    control += internalTab + "\t<span class=\"navbar-toggler-icon\"></span>\n";
+    control += internalTab + "</button>\n";
+
+
+    //menu
+    control += internalTab + "<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n";
+    var menu = item.children.at(1);
+    control += internalTab + "\t<ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\n";
+    var navItems = "";
+
+    console.log("427 menu name: " + menu.constructor.name + " : " + menu.name);
+    console.log("428 menu children: " + menu.children.length);
+    
+    menu.children.forEach(function (element, i) {
+        console.log("431 i: " + i);
+
+        // if(i == 0){
+        //     navItems += internalTab +"<li class=\"nav-item\">\n";
+        //     navItems += internalTab + "\t<a class=\"nav-link active\" aria-current=\"page\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+        // }
+        if(element.name.endsWith("Dropdown")){
+            navItems += internalTab + "\t\t<li class=\"nav-item dropdown\">\n";
+            navItems += internalTab + "\t\t\t<a class=\"nav-link dropdown-toggle\" id=\"navbarDropdown\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+            navItems += internalTab + "\t\t\t<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\n";
+			navItems += internalTab + "\t\t\t\t<li><a class=\"dropdown-item\" href=\"#\">Action</a></li>\n";
+			navItems += internalTab + "\t\t\t\t<li><hr class=\"dropdown-divider\"></li>\n";
+			navItems += internalTab + "\t\t\t\t<li><a class=\"dropdown-item\" href=\"#\">Something else here</a></li>\n";
+			navItems += internalTab + "\t\t\t</ul>\n";
+        }
+        else {
+            navItems += internalTab + "\t\t<li class=\"nav-item\">\n";
+            navItems += internalTab + "\t\t\t<a class=\"nav-link\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+        }
+        navItems += internalTab +"\t\t</li>\n";
+    });
+    control += navItems + internalTab +"\t</ul>\n";
+
+    if(item.children.count == 3){
+        control += "<form class=\"d-flex\">\n" +
+        "\t<input class=\"form-control me-2\" type=\"search\" placeholder=\"Search\" aria-label=\"Search\">\n" +
+        "\t<button class=\"btn btn-outline-success\" type=\"submit\">Search</button>\n" +
+        "</form>\n";
+    }
+    control += internalTab + "</div>\n";
+    control += tab + "</div>\n";
+    control += tab + "</nav>";
+
+    return control;
+}
+
+function CreateCard(item, tab) {
+    console.log("409 creating card");
+
+    //get card width
+
+
+    var control = "<div class=\"card\">\n";
+    //base
+    control += tab + "<div class=\"container-fluid\">\n";
+    //var end = tab + "</div>\n</nav>";
+    var internalTab = tab + "\t";
+
+    control += internalTab + "<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
+    control += internalTab + "\t<span class=\"navbar-toggler-icon\"></span>\n";
+    control += internalTab + "</button>\n";
+
+
+    //menu
+    control += internalTab + "<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n";
+    var menu = item.children.at(1);
+    control += internalTab + "\t<ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\n";
+    var navItems = "";
+
+    console.log("427 menu name: " + menu.constructor.name + " : " + menu.name);
+    console.log("428 menu children: " + menu.children.length);
+    
+    menu.children.forEach(function (element, i) {
+        console.log("431 i: " + i);
+
+        // if(i == 0){
+        //     navItems += internalTab +"<li class=\"nav-item\">\n";
+        //     navItems += internalTab + "\t<a class=\"nav-link active\" aria-current=\"page\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+        // }
+        if(element.name.endsWith("Dropdown")){
+            navItems += internalTab + "\t\t<li class=\"nav-item dropdown\">\n";
+            navItems += internalTab + "\t\t\t<a class=\"nav-link dropdown-toggle\" id=\"navbarDropdown\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+            navItems += internalTab + "\t\t\t<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\n";
+			navItems += internalTab + "\t\t\t\t<li><a class=\"dropdown-item\" href=\"#\">Action</a></li>\n";
+			navItems += internalTab + "\t\t\t\t<li><hr class=\"dropdown-divider\"></li>\n";
+			navItems += internalTab + "\t\t\t\t<li><a class=\"dropdown-item\" href=\"#\">Something else here</a></li>\n";
+			navItems += internalTab + "\t\t\t</ul>\n";
+        }
+        else {
+            navItems += internalTab + "\t\t<li class=\"nav-item\">\n";
+            navItems += internalTab + "\t\t\t<a class=\"nav-link\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+        }
+        navItems += internalTab +"\t\t</li>\n";
+    });
+    control += navItems + internalTab +"\t</ul>\n";
+
+    if(item.children.count == 3){
+        control += "<form class=\"d-flex\">\n" +
+        "\t<input class=\"form-control me-2\" type=\"search\" placeholder=\"Search\" aria-label=\"Search\">\n" +
+        "\t<button class=\"btn btn-outline-success\" type=\"submit\">Search</button>\n" +
+        "</form>\n";
+    }
+    control += internalTab + "</div>\n";
+    control += tab + "</div>\n";
+    control += tab + "</nav>";
+
+    return control;
+}
+
+
 module.exports = {
     CreateControl: createControl,
-    CreateTextBlock: createTextBlock
+    CreateTextBlock: createTextBlock,
+    GetControlPathProperties: getControlPathProperties
 };
 

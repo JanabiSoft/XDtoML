@@ -4,7 +4,7 @@ const { ConvertHTML } = require("./HTML");
 //main function
 function convertHtml(selection) { 
 
-    console.log("HTML conversion initiated");
+    console.log("HTML conversion initiated: " + selection.items[0].constructor.name);
 
     initializePluginData();
 

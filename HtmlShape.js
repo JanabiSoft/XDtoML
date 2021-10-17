@@ -1,48 +1,51 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
+const {GetCornerRadii, GetColors} = require("./Common.js");
 
-function generateShape(item) {
+function generateShape(item, tab) {
     var result = "";
-    var ele = "";
+    var element = "";
     var props = "";
-    var eleStyle = "style=\"";
-    var svgStyle = "style=\"";
+    var elementStyle = "style=\"";
+    var containerStyle = "style=\"";
     var stroke = "";
     var fill = "";
-    var svgStart = "";
+    var containerStart = "";
 
     var content = "";
-    var tag = "";
+    var tag = getShapeTag(item.constructor.name);
 
-    console.log("creating Shape: " + item.name);
+    console.log("17 creating Shape: " + item.constructor.name + ":" + item.name);
 
     if (item != null) {
-        if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
-        if (item.fill != null) fill = item.fill.value.toString(16).slice(2);
+        var containerEnd = "\n" + tab + "</svg>";
+        tab += "\t";
 
-        var svgEnd = "\t</svg>";
+        if (item.stroke != null) stroke = item.stroke.value.toString(16).slice(2);
+        if (item.fill != null) {
+            if(item.fill.value != undefined) fill = item.fill.value.toString(16).slice(2);
+        }
     
         if (item instanceof Rectangle) {
-            tag = "rectangle";
-            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
+            tag = "rect";
+            containerStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\"";
             props += "width=\"" + item.width + "\"";
             props += " height=\"" + item.height + "\"";
-            props += getCornerRadii(item.cornerRadii);
+            props += GetCornerRadii(item.cornerRadii);
         } 
         else if(item instanceof Ellipse) {
             tag = "ellipse";
-            svgStart = "<svg height=\"" + (item.radiusY * 2) + "\" width=\"" + (item.radiusX * 2) + "\" ";
+            containerStart = "<svg height=\"" + (item.radiusY * 2) + "\" width=\"" + (item.radiusX * 2) + "\"";
             props += "cx=\"" + (item.localBounds.x + item.radiusX) + "\"";
             props += " cy=\"" + (item.localBounds.y + item.radiusY) + "\"";
             props += " rx=\"" + (item.radiusX).toString()+ "\"";
             props += " ry=\"" + (item.radiusY).toString()+ "\"";
         }
         else if(item instanceof Polygon){
-            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\" ";
+            containerStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\"";
             tag = "polygon";
-
         }
         else if(item instanceof Line){
-            svgStart = "<svg height=\"" + item.globalDrawBounds.height + "px;\" width=\"" + item.globalDrawBounds.width + "px;\" ";
+            containerStart = "<svg height=\"" + item.globalDrawBounds.height + "px;\" width=\"" + item.globalDrawBounds.width + "px;\"";
             var x = item.start.x;
             var y = item.start.y;
             var x2 = item.end.x;
@@ -56,41 +59,68 @@ function generateShape(item) {
             props += " y1=\"" + y + "\"";
             props += " y2=\"" +  y2 + "\"";
         }
+        else if(item instanceof Path){
+            tag = "path";
+            var d = item.pathData;
+            containerStart = "<svg height=\"" + Math.round(item.globalDrawBounds.height) + "\" width=\"" + Math.round(item.globalDrawBounds.width) + "\"";
+            props += " d=\"" + d + "\"";
+        }
 
-        svgStyle += getMargin(item);
+        containerStyle += getMargin(item);
 
-        if(stroke != undefined){
-            eleStyle += " stroke: #" + stroke + ";";
-            if(item.storkeWidth != undefined) eleStyle += "stroke-width:"+ item.storkeWidth + "px;";
-            else eleStyle += "stroke-width:1px;";
-        } 
-        if(fill != undefined && !(item instanceof Line)) eleStyle += " fill: #" + fill + ";";
+        elementStyle += getShapeColors(item);
 
-        eleStyle += "\"";
-        svgStyle += "\"";
+        elementStyle += "\"";
+        containerStyle += "\"";
 
-        ele = "\t\t<" + tag;
-        if(tag == "polygon") result = svgStart + " " + svgStyle + ">\n@*" + ele + " " + props + " " + eleStyle + "/>*@\n\t" + svgEnd;
-        else result = svgStart + " " + svgStyle + ">\n\t" + ele + " " + props + " " + eleStyle + "/>\n\t" + svgEnd;
+        element = "<" + tag;
+        if(tag == "polygon") result = containerStart + " " + containerStyle + ">\n@*" + element + " " + props + " " + elementStyle + "/>*@\n\t" + tab + svgEnd;
+        else result = containerStart + " " + containerStyle + ">\n" + tab + element + " " + props + " " + elementStyle + "/>" + containerEnd;
         return result;
     }
 }
 
 function getMargin(item) {
-    console.log(item.name + " : " + item.boundsInParent);
-    var x = item.boundsInParent.x;
-    var y = item.boundsInParent.y;
-    return "position:absolute;left:" + x.toString() + "px;top:" + y.toString() + "px;";
+    console.log("84" + item.name + " : " + item.boundsInParent);
+    if (item != undefined) {
+        var x = item.boundsInParent.x;
+        var y = item.boundsInParent.y;
+        return "position:absolute;left:" + Math.round(x.toString()) + "px;top:" + Math.round(y.toString()) + "px;";
+    }
+    return "";
 }
 
-function getCornerRadii(radii) {
+function getShapeTag(shape) {
+    switch (shape) {
+        case "Rectangle":
+            return "rect";
+        case "Ellipse":
+            return "ellipse";
+        case "Line":
+            return "line";
+        case "Polygon":
+            return "polygon";
+        default:
+            return "rect";
+    }
+}
+
+function getShapeColors(item) {
+    console.log("109 getting colors");
     var result = "";
-    if (radii.topLeft != 0) result += " rx=\"" + radii.topLeft + "\"";
-    if (radii.topRight != 0) result += " rx=\"" + radii.topRight + "\"";
-    if (radii.bottomRight != 0) result += " ry=\"" + radii.bottomRight + "\"";
-    if (radii.bottomLeft != 0) result += " ry=\"" + radii.bottomLeft + "\"";
+    if (item.stroke != null) {
+        result = "stroke:#" + item.stroke.value.toString(16).slice(2) + ";";
+    }
+    if (item.storkeWidth != undefined) {
+        result += "stroke-width:" + item.storkeWidth + "px;";
+    }
+    if (item.fill != null) {
+        if(item.fill.value != undefined) result += "fill:#" + item.fill.value.toString(16).slice(2) + ";";
+    }
+
     return result;
 }
+
 
 module.exports = {
     GenerateShape: generateShape

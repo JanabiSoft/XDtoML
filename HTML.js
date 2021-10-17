@@ -1,84 +1,105 @@
 let output = "";
-const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path, Artboard} = require("scenegraph");
+const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path, Artboard, RepeatGrid} = require("scenegraph");
 const {CreateControl, CreateTextBlock} = require("./HtmlControl.js");
-const {CreateShape} = require("./HtmlShape.js");
+const {GenerateShape} = require("./HtmlShape.js");
 const {CreateLayout} = require("./HtmlLayout.js");
 const {CreateBlazorise} = require("./blazorise.js");
+const {GenerateImage, GenerateSVG} = require("./Image.js");
+const Image = require("scenegraph").ImageFill;
+
 
 let lastTab = 0;
 
 function convert(selection) {
+    console.log("converting to html: " + selection.constructor.name);
+    var output = "";
     var children = selection.children;
     var page = "";
-    var header = "<head>";
-    header += "\n<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl\" crossorigin=\"anonymous\">";
-    header += "\n</head>";
+    var header = "\t<head>";
+    header += "\n\t\t<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl\" crossorigin=\"anonymous\">";
+    header += "\n\t</head>";
 
-    if(selection instanceof Artboard){
-        page = "<!DOCTYPE html>\n";
-        page += "<html>\n";
-        page += header + "\n<body>";
-    }else{
-        page = "<div>";
-    }
-
-    output = page;
     var tab = "";
     var tag = "";
 
-    if(children.length > 1) {
-        children.forEach(item => {
+    if(selection instanceof Artboard){
+        console.log("26 creating artboard with children: " + selection.children.length);
+        page = "<!DOCTYPE html>\n";
+        page += "<html>\n";
+        page += header + "\n\t<body>";
+        output = page;
+        if(children.length > 0) {
+            children.forEach(function(item, i) {
+                console.log("33 creating artboard child: " + i);
+                tab = getTabPosition(8);
+                tag = createElement(item, tab);
+             
+                output += "\n" + tab + tag;
+            });
+        }
+        else{
             tab = getTabPosition(4);
-            tag = createElement(item);
-         
-            output += "\n" + tab + tag;
-        });
+            output += "\n" + tab + createElement(selection, tab) + "\n";
+        }
+        var ending = "\n<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0\" crossorigin=\"anonymous\"></script>";
+        ending += "\n<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css\">";
+        output += ending + "\n\t</body>\n</html>";
     }
     else{
-
-        output += "\n" + createElement(selection) + "\n";
+        //page = "<div>";
+        tab = getTabPosition(0);
+        output += tab + createElement(selection, tab);
     }
 
-    if(selection instanceof Artboard){
-        var ending = "\n<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0\" crossorigin=\"anonymous\"></script>";
+    return output;
+
+    // if(selection instanceof Artboard){
         
-        return output += ending + "\n\t</body>\n</html>";
-    }else{
-        return output += "\n\t</div>\n";
-    }
+    //     return output += ending + "\n\t</body>\n</html>";
+    // }else{
+    //     return output += "\n</div>\n";
+    // }
 
 }
 
-function createElement(element) {
+function createElement(element, tab) {
         
-    if (element instanceof Rectangle) return CreateShape("rect", element);
+    console.log("creating element: " + element.constructor.name + " name:" + element.name);
+
+    if (element instanceof Rectangle && element.fill instanceof Image) return GenerateImage(element, tab);
+
+    else if (element instanceof Rectangle) return GenerateShape(element, tab);
         
     else if (element instanceof Ellipse) {
-        return CreateShape("ellipse", element);
+        return GenerateShape(element, tab);
     }
     else if (element instanceof Polygon) {
-        return CreateShape("polygon", element);
+        return GenerateShape(element, tab);
     }
     else if (element instanceof Line) {
-        return CreateShape("line", element);
+        return GenerateShape(element, tab);
     }
     else if (element instanceof Text && element.name.includes("Hyperlink")) {
-        return CreateControl(element);
+        return CreateControl(element, tab);
     }
     else if (element instanceof Text) {
-        return CreateTextBlock(element);
+        return CreateTextBlock(element, tab);
     }
     else if (element instanceof SymbolInstance && isControl(element.name)) {
-        return CreateCustomeControl(element);
+        return CreateCustomeControl(element, tab);
     }
     else if (element instanceof SymbolInstance && isLayout(element.name)) {
-        return CreateLayout(element);
+        return CreateLayout(element, tab);
     }
     else if (element instanceof SymbolInstance) {
-        return CreateControl(element);
+        return CreateControl(element, tab);
     }
     else if (element instanceof Group) {
-        return CreateLayout(element);
+        if(element.name.endsWith("-symbol") | element.name.endsWith("-image")) return GenerateSVG(element, tab);
+        else return CreateLayout(element, tab);
+    }
+    else if (element instanceof RepeatGrid) {
+        return CreateLayout(element, tab);
     }
     else{
         return "";
@@ -105,7 +126,7 @@ function getTabPosition(spaces) {
     return res;
 }
 
-function CreateCustomeControl(ele) {
+function CreateCustomeControl(ele, tab) {
     var cfk = window.localStorage.getItem("component_framework");
     if (cfk == "blazorise") return CreateBlazorise(ele);
 }
