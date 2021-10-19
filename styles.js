@@ -5,6 +5,7 @@ function getTextStyle(item) {
     if (item instanceof Text) {
         var style;
         style = "font-size:" + item.fontSize + ";";
+        style += "font-weight:" + item.fontStyle + ";";
         return style;
         }
 }
