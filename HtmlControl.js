@@ -475,12 +475,10 @@ function CreateCard(item, tab) {
     console.log("409 creating card");
 
     //get card width
+    var style = " style=\"" + item.width.toString() + ";";
 
+    var control = "<div class=\"card\"" + style + "\">\n";
 
-    var control = "<div class=\"card\">\n";
-    //base
-    control += tab + "<div class=\"container-fluid\">\n";
-    //var end = tab + "</div>\n</nav>";
     var internalTab = tab + "\t";
 
     control += internalTab + "<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
@@ -528,8 +526,7 @@ function CreateCard(item, tab) {
         "</form>\n";
     }
     control += internalTab + "</div>\n";
-    control += tab + "</div>\n";
-    control += tab + "</nav>";
+    control += tab + "</div>";
 
     return control;
 }
