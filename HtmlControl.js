@@ -434,7 +434,7 @@ function CreateNavbar(item, tab) {
     console.log("427 menu name: " + menu.constructor.name + " : " + menu.name);
     console.log("428 menu children: " + menu.children.length);
     
-    menu.children.forEach(function (element, i) {
+    menu.children.forEachRight(function (element, i) {
         console.log("431 i: " + i);
 
         // if(i == 0){
