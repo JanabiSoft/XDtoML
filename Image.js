@@ -69,7 +69,7 @@ function generateImage(item, tab) {
             fill = item.fill;
             var ext = fill.mimeType.substring(6);
             if (ext == "jpeg") ext = "jpg";
-            imageName = item.name + "." + ext;
+            imageName = "images/" + item.name + "." + ext;
             
             opacity = "opacity:" + item.opacity + ";";
         }
@@ -86,7 +86,6 @@ function generateImage(item, tab) {
     }
 }
 
-
 function generateSVG(item, tab) {
     console.log("generating svg started: " + item.name);
     tab += "\t";
@@ -96,7 +95,7 @@ function generateSVG(item, tab) {
     var imageName;
 
     if (item != null) {
-        imageName = item.name + ".svg";
+        imageName = "images/" + item.name + ".svg";
         console.log("image name: " + imageName);
 
         eleStyle += GenerateStyle(item);
@@ -110,7 +109,6 @@ function generateSVG(item, tab) {
         return result;
     }
 }
-
 
 function hyperLink() {
     return "<a ";

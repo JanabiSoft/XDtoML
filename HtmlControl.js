@@ -532,10 +532,24 @@ function CreateCard(item, tab) {
     return control;
 }
 
+function createIconLink(item, tab) {
+    console.log("536 creating icon link: " + item.name);
+    var name = item.name.replace("-icon-link", "");
+    var txt = "bi-" + name;
+    var textColor = GetTextColor(item);
+    var style = "style=\"" + GenerateStyle(item) + textColor + "\"" ;
+    var attrib = GenerateAttributes(item);
+
+    var result = "<a href=\"#\">\n";
+    result += tab + "<i " + attrib + " " + style + " class=\"" + txt +"\"></i>\n";
+    result += "</a>";
+    return result;
+}
 
 module.exports = {
     CreateControl: createControl,
     CreateTextBlock: createTextBlock,
-    GetControlPathProperties: getControlPathProperties
+    GetControlPathProperties: getControlPathProperties,
+    CreateIconLink: createIconLink
 };
 

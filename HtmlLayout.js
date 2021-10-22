@@ -1,7 +1,7 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance, RepeatGrid} = require("scenegraph");
 const Image = require("scenegraph").ImageFill;
 const {GenerateShape} = require("./HtmlShape.js");
-const {CreateControl, CreateTextBlock, GetControlPathProperties} = require("./HtmlControl.js");
+const {CreateControl, CreateTextBlock, GetControlPathProperties, CreateIconLink} = require("./HtmlControl.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition, GetColors} = require("./Common.js");
 const {CreateUserControl} = require("./UserControl.js");
@@ -21,7 +21,10 @@ function createLayout(item, tab) {
         var content = "";
         if(children.length > 1) {
             children.forEach(function (element, i) {
-                if(element instanceof Rectangle && element.name == "frame"){
+                if (element.name.endsWith("-icon-link")) {
+                    content += "\n" + internalTab + CreateIconLink(element, internalTab);
+                }
+                else if(element instanceof Rectangle && element.name == "frame"){
                     content += "\n" + internalTab + createBox(element, internalTab);
                 }
                 else if (element instanceof Rectangle && element.fill instanceof Image) content += "\n" + internalTab + GenerateImage(element, internalTab);
