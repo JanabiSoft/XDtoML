@@ -2,9 +2,8 @@ const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = r
 const {GenerateShape} = require("./HtmlShape.js");
 const {GenerateAttributes, GetColors, GetCornerRadii, } = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
-const {CreateText} = require("./Text.js");
-const { GetTextStyle, GetTextColor } = require("./styles.js");
-
+const {CreateText, CreateFontIcon, CreateTitle, CreateParagraph} = require("./Text.js");
+const { GetTextStyle, GetTextColor, GetStyle, GetStyleColors, GetBaseColors, GetMeasurement, GetBaseStyle } = require("./styles.js");
 
 function createControl(item, tab) {
    
@@ -138,6 +137,7 @@ function getControlType(item) {
     else if(name.includes("button") || name.includes("accentbutton")) return "Button";
     else if(name.includes("pageheader")) return "PageHeader";
     else if(name.includes("navbar")) return "Navbar";
+    else if(name.includes("card")) return "Card";
     else return "unknown";
 }
 
@@ -228,8 +228,9 @@ function isGroupControl(type) {
 }
 
 function createTextBlock(item, tab) {
+    console.log("creating text block from: " + item.name);
     var txt = item.text;
-    var style = "style=\"" + GenerateStyle(item) + GetTextColor(item) + GetTextStyle(item) + "\"" ;
+    var style = "style=\"" + GetStyle(item) + GetTextColor(item) + GetTextStyle(item) + "\"" ;
     var textStyle = "";
     var attrib = GenerateAttributes(item);
     return "<span " + attrib + " " + style +">" + txt + "</span>";
@@ -298,6 +299,7 @@ function createHtmlControl(type, attrib, props, style, text) {
 }
 
 function createHyperlink(item) {
+    console.log("creating hyperlink from: " + item.name);
     var attributes = generateAttributes(item);
     var style = " style=\"" + generateStyle(item);
     var content = "";
@@ -335,6 +337,7 @@ function getStyle(item) {
 }
 
 function createRadioButtons(item) {
+    console.log("creating radio buttons from: " + item.name);
     var attributes = GenerateAttributes(item);
     var style = " style=\"" + GenerateStyle(item);
 
@@ -384,11 +387,12 @@ function createSelect(ele) {
 }
 
 function createButton(item) {
+    console.log("creating button from: " + item.name);
     var label = item.children.at(1).text;
-    var labelColor = "color:" + GetColors(item.children.at(1));
-    var colors = "background-color:" + GetColors(item.children.at(0));
+    var labelColor = GetTextColor(item.children.at(1));
+    var baseColors = GetBaseColors(item.children.at(0));
     var attributes = GenerateAttributes(item);
-    var style = " style=\"" + GenerateStyle(item) + labelColor + colors;
+    var style = " style=\"" + GetStyle(item) + labelColor + baseColors;
 
     return "<button " + attributes + style + "\">" + label + '</button>';
 }
@@ -473,65 +477,112 @@ function CreateNavbar(item, tab) {
 }
 
 function CreateCard(item, tab) {
-    console.log("409 creating card");
+    console.log("creating card: " + item.name);
 
     //get card width
     //var style = " style=\"width:" + item.globalDrawBounds.width.toString() + "px;";
-    var style = " style=\"" + GenerateStyle(item);
-
-
-    var control = "<div class=\"card\"" + style + "\">\n";
-
     var internalTab = tab + "\t";
 
-    control += "\t" + "<div class=\"card-body\">\n";
-    
+    var button, icon, title, text, base, image;
 
-    control += internalTab + "<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
-    control += internalTab + "\t<span class=\"navbar-toggler-icon\"></span>\n";
-    control += internalTab + "</button>\n";
-
-    //menu
-    control += internalTab + "<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n";
-    var menu = item.children.at(1);
-    control += internalTab + "\t<ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\n";
-    var navItems = "";
-
-    console.log("427 menu name: " + menu.constructor.name + " : " + menu.name);
-    console.log("428 menu children: " + menu.children.length);
-    
-    menu.children.forEach(function (element, i) {
-        console.log("431 i: " + i);
-
-        // if(i == 0){
-        //     navItems += internalTab +"<li class=\"nav-item\">\n";
-        //     navItems += internalTab + "\t<a class=\"nav-link active\" aria-current=\"page\" href=\"#\">" + element.children.at(1).text + "</a>\n";
-        // }
-        if(element.name.endsWith("Dropdown")){
-            navItems += internalTab + "\t\t<li class=\"nav-item dropdown\">\n";
-            navItems += internalTab + "\t\t\t<a class=\"nav-link dropdown-toggle\" id=\"navbarDropdown\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" href=\"#\">" + element.children.at(1).text + "</a>\n";
-            navItems += internalTab + "\t\t\t<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\n";
-			navItems += internalTab + "\t\t\t\t<li><a class=\"dropdown-item\" href=\"#\">Action</a></li>\n";
-			navItems += internalTab + "\t\t\t\t<li><hr class=\"dropdown-divider\"></li>\n";
-			navItems += internalTab + "\t\t\t\t<li><a class=\"dropdown-item\" href=\"#\">Something else here</a></li>\n";
-			navItems += internalTab + "\t\t\t</ul>\n";
-        }
-        else {
-            navItems += internalTab + "\t\t<li class=\"nav-item\">\n";
-            navItems += internalTab + "\t\t\t<a class=\"nav-link\" href=\"#\">" + element.children.at(1).text + "</a>\n";
-        }
-        navItems += internalTab +"\t\t</li>\n";
+    item.children.forEach(function(ele, i){
+        if(ele.name.endsWith("button") | ele.name.startsWith("Button")) button = ele;
+        else if(ele.name.endsWith("title")) title = ele;
+        else if(ele.name.endsWith("text")) text = ele;
+        else if(ele.name.endsWith("icon")) icon = ele;
+        else if(ele.name.endsWith("image")) image = ele;
+        else if(ele.name.includes("Card/Background")) base = ele.children.at(0);
+        else if(ele.name.includes("card-base")) base = ele;
     });
-    control += navItems + internalTab +"\t</ul>\n";
 
-    if(item.children.count == 3){
-        control += "<form class=\"d-flex\">\n" +
-        "\t<input class=\"form-control me-2\" type=\"search\" placeholder=\"Search\" aria-label=\"Search\">\n" +
-        "\t<button class=\"btn btn-outline-success\" type=\"submit\">Search</button>\n" +
-        "</form>\n";
+    var style = " style=\"" + GetMeasurement(item) + GetBaseStyle(base);
+    var control = "<div class=\"card\"" + style + "\">\n";
+
+    // var icon = item.children.at(4);
+    // var title = item.children.at(3);
+    // var text = item.children.at(2);
+    // var button = item.children.at(1);
+
+    //image
+    if (image != undefined) {
+        var imageStyle = " style=\"" + GetStyle(image) + "\"";
+        control += internalTab + "<img src=\"images/" + icon.name +".png\"" + imageStyle + " />\n";
     }
+
+    //icon
+    if (icon != undefined) {
+        var iconStyle = " style=\"" + GetStyle(icon) + "\"";
+        //control += internalTab + "<i class=\"" + icon.text +"\"" + iconStyle + " />\n";
+        control += internalTab + CreateFontIcon(icon) + "\n";
+    }
+
+    control += internalTab + "<div class=\"card-body\">\n";
+
+    // var titleStyle = " style=\"" + GetStyle(title) + "\"";
+    // control += internalTab + "\t<span"  + titleStyle + "\">" + title.text + "</span>\n";
+    control += internalTab + "\t" + CreateTitle(title) + "\n";
+
+
+    // var textStyle = " style=\"" + GetStyle(text) + "\"";
+    // control += internalTab + "\t<p"+ textStyle + "\">" + text.text + "\"</p>\n";
+    control += internalTab + "\t" + CreateParagraph(text) + "\n";
+
+
+    if (button != undefined) {
+        control += internalTab + "\t" + createButton(button) + "\n";
+    }
+
+
+    // var buttonStyle = " style=\"" + GetStyle(button) + GetStyleColors(button.children.at(0)) +"\"";
+    // // buttonStyle += GetStyleColors(button.children.at(0));
+    // control += internalTab + "\t<button" + buttonStyle + "\">" + button.children.at(1).text + "</button>\n";
+
     control += internalTab + "</div>\n";
-    control += "\t" + "</div>\n";
+
+
+    // control += internalTab + "<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
+    // control += internalTab + "\t<span class=\"navbar-toggler-icon\"></span>\n";
+    // control += internalTab + "</button>\n";
+
+    // //menu
+    // control += internalTab + "<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n";
+    // var menu = item.children.at(1);
+    // control += internalTab + "\t<ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\n";
+    // var navItems = "";
+
+    // console.log("427 menu name: " + menu.constructor.name + " : " + menu.name);
+    // console.log("428 menu children: " + menu.children.length);
+    
+    // menu.children.forEach(function (element, i) {
+    //     console.log("431 i: " + i);
+
+    //     // if(i == 0){
+    //     //     navItems += internalTab +"<li class=\"nav-item\">\n";
+    //     //     navItems += internalTab + "\t<a class=\"nav-link active\" aria-current=\"page\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+    //     // }
+    //     if(element.name.endsWith("Dropdown")){
+    //         navItems += internalTab + "\t\t<li class=\"nav-item dropdown\">\n";
+    //         navItems += internalTab + "\t\t\t<a class=\"nav-link dropdown-toggle\" id=\"navbarDropdown\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+    //         navItems += internalTab + "\t\t\t<ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\n";
+	// 		navItems += internalTab + "\t\t\t\t<li><a class=\"dropdown-item\" href=\"#\">Action</a></li>\n";
+	// 		navItems += internalTab + "\t\t\t\t<li><hr class=\"dropdown-divider\"></li>\n";
+	// 		navItems += internalTab + "\t\t\t\t<li><a class=\"dropdown-item\" href=\"#\">Something else here</a></li>\n";
+	// 		navItems += internalTab + "\t\t\t</ul>\n";
+    //     }
+    //     else {
+    //         navItems += internalTab + "\t\t<li class=\"nav-item\">\n";
+    //         navItems += internalTab + "\t\t\t<a class=\"nav-link\" href=\"#\">" + element.children.at(1).text + "</a>\n";
+    //     }
+    //     navItems += internalTab +"\t\t</li>\n";
+    // });
+    // control += navItems + internalTab +"\t</ul>\n";
+
+    // if(item.children.count == 3){
+    //     control += "<form class=\"d-flex\">\n" +
+    //     "\t<input class=\"form-control me-2\" type=\"search\" placeholder=\"Search\" aria-label=\"Search\">\n" +
+    //     "\t<button class=\"btn btn-outline-success\" type=\"submit\">Search</button>\n" +
+    //     "</form>\n";
+    // }
     control += tab + "</div>";
 
     return control;

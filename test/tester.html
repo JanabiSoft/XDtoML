@@ -4,15 +4,11 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 	</head>
 	<body>
-		<div class="wrapper">
-			<img src="home-background-image.png" style="width:1280px;height:4000px;position:absolute;left:0px;top:0px"/>
-		</div>
-
-        
-		<div id="header" style="width:1176px;height:68px;position:absolute;left:56px;top:49px;">
+        <img src="images/home-background-image.png" style=" stroke:#707070;stroke-width:1px;width:1280px;height:4000px;position:absolute;left:0px;top:0px;opacity:1;"/>
+        <div id="header" style="width:1176px;height:68px;position:absolute;left:56px;top:49px;">
 	        <div id="logo-span" style="width:250px;height:66px;position:absolute;left:0px;top:2px;">
 		        <span id="JanabiSoft" style="width:178px;height:61px;position:absolute;left:81px;top:11px;color: #ffc107;font-size:32;font-weight:Bold;">JanabiSoft</span>
-		        <img src="logo-image.png" style=" stroke:#707070;stroke-width:1px;width:64px;height:64px;position:absolute;left:0px;top:0px;opacity:1;"/>
+		        <img src="images/logo-image.png" style=" stroke:#707070;stroke-width:1px;width:64px;height:64px;position:absolute;left:0px;top:0px;opacity:1;"/>
 	        </div>
 	        <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#007bff;width:681px;height:56px;position:absolute;left:495px;top:0px;border-radius: 4px;">
 	        	<div class="container-fluid">
@@ -22,16 +18,7 @@
 	        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 	        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 	        				<li class="nav-item">
-	        					<a class="nav-link" href="#">Credits</a>
-	        				</li>
-	        				<li class="nav-item">
-	        					<a class="nav-link" href="#">Contact</a>
-	        				</li>
-	        				<li class="nav-item">
-	        					<a class="nav-link" href="#">Support</a>
-	        				</li>
-	        				<li class="nav-item">
-	        					<a class="nav-link" href="#">About</a>
+	        					<a class="nav-link" href="#">Home</a>
 	        				</li>
 	        				<li class="nav-item dropdown">
 	        					<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#">Apps</a>
@@ -42,7 +29,16 @@
 	        					</ul>
 	        				</li>
 	        				<li class="nav-item">
-	        					<a class="nav-link" href="#">Home</a>
+	        					<a class="nav-link" href="#">About</a>
+	        				</li>
+	        				<li class="nav-item">
+	        					<a class="nav-link" href="#">Support</a>
+	        				</li>
+	        				<li class="nav-item">
+	        					<a class="nav-link" href="#">Contact</a>
+	        				</li>
+	        				<li class="nav-item">
+	        					<a class="nav-link" href="#">Credits</a>
 	        				</li>
 	        			</ul>
 	        		</div>
@@ -50,7 +46,7 @@
 	        	</nav>
         </div>
         <div id="intro-section" style="width:1091px;height:312px;position:absolute;left:93px;top:229px;">
-	        <img src="header-image.svg" style="width:462px;height:312px;position:absolute;left:629px;top:0px;"/>
+	        <img src="images/header-image.svg" style="width:462px;height:312px;position:absolute;left:629px;top:0px;"/>
 	        <span id="header-title" style="width:438px;height:43px;position:absolute;left:0px;top:51px;color: #0069d9;font-size:32;font-weight:Bold;">Apps That Organize your Life</span>
 	        <span id="header-text" style="width:458px;height:192px;position:absolute;left:0px;top:105px;color: #343a40;font-size:24;font-weight:Bold;">Modern Life is too much complicated, 
 there are too many tasks, 
@@ -60,7 +56,7 @@ In this chaos there is no better way than
 JanabiSoft apps to keep you in control.</span>
         </div>
         <div id="features-section" style="width:1155px;height:500px;position:absolute;left:77px;top:581px;">
-	        <img src="feature-image.png" style=" stroke:#707070;stroke-width:1px;width:460px;height:500px;position:absolute;left:0px;top:0px;opacity:1;"/>
+	        <img src="images/feature-image.png" style=" stroke:#707070;stroke-width:1px;width:460px;height:500px;position:absolute;left:0px;top:0px;opacity:1;"/>
 	        <span id="feature-title" style="width:478px;height:86px;position:absolute;left:634px;top:84px;color: #0069d9;font-size:32;font-weight:Bold;">Increase your productivity with 
 JanabiSoft apps</span>
 	        <span id="feature-text" style="width:564px;height:106px;position:absolute;left:591px;top:181px;color: #707070;font-size:24;font-weight:Regular;">
@@ -68,71 +64,56 @@ We have many apps that all together will improve every aspect of your life.</spa
         </div>
         <div id="apps-section" style="width:1070px;height:800px;position:absolute;left:93px;top:1081px;">
 	        <span id="app-section-title" style="width:256px;height:43px;position:absolute;left:415px;top:0px;color: #0069d9;font-size:32;font-weight:Bold;">Browse our Apps</span>
-	        <div id="apps-cards" style="width:1070px;height:698px;position:absolute;left:0px;top:108px;">
+	        <div id="apps-cards-group" style="width:1070px;height:698px;position:absolute;left:0px;top:108px;">
 		        <div class="card" style="width:306px;height:316px;position:absolute;left:0px;top:0px;">
+		        		<img src="images/organizer-icon.png" style="width:128px;height:128px;position:absolute;left:80px;top:3px;" />
 		        		<div class="card-body">
-		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		        			<span class="navbar-toggler-icon"></span>
-		        		</button>
-		        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-		        			</ul>
-		        		</div>
+		        			<span style="width:177px;height:32px;position:absolute;left:56px;top:127px;"">Clever Organizer</span>
+		        			<p style="width:244px;height:66px;position:absolute;left:22px;top:164px;"">Whether your are tasking, scheduling or just taking notes. Nothing will help you better than"</p>
+		        			<button id="card-button" style="width:82px;height:37px;position:absolute;left:10px;top:252px;color: #007aff;stroke:#707070;background-color:#ffffff;">more...</button>
 		        		</div>
 		        	</div>
 		        <div class="card" style="width:306px;height:316px;position:absolute;left:382px;top:0px;">
+		        		<img src="images/portfolio-icon.png" style="width:96px;height:96px;position:absolute;left:96px;top:19px;" />
 		        		<div class="card-body">
-		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		        			<span class="navbar-toggler-icon"></span>
-		        		</button>
-		        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-		        			</ul>
-		        		</div>
+		        			<span style="width:163px;height:32px;position:absolute;left:63px;top:127px;"">Clever Portfolio</span>
+		        			<p style="width:245px;height:66px;position:absolute;left:22px;top:164px;"">An easy and smart way to manage your real estate & financial investments."</p>
+		        			<button id="card-button" style="width:82px;height:37px;position:absolute;left:10px;top:252px;color: #007aff;stroke:#707070;background-color:#ffffff;">more...</button>
 		        		</div>
 		        	</div>
 		        <div class="card" style="width:306px;height:316px;position:absolute;left:764px;top:0px;">
+		        		<img src="images/wallet-icon.png" style="width:96px;height:96px;position:absolute;left:96px;top:19px;" />
 		        		<div class="card-body">
-		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		        			<span class="navbar-toggler-icon"></span>
-		        		</button>
-		        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-		        			</ul>
-		        		</div>
+		        			<span style="width:139px;height:32px;position:absolute;left:56px;top:127px;"">Clever Wallet</span>
+		        			<p style="width:244px;height:91px;position:absolute;left:22px;top:164px;"">Forgetfulness is s gift.
+But for passwords, ID numbers & subscription details it is not, so our app is here to help"</p>
+		        			<button id="Button/Default/Link" style="width:82px;height:37px;position:absolute;left:10px;top:252px;color: #007aff;stroke:#707070;background-color:#ffffff;">more...</button>
 		        		</div>
 		        	</div>
 		        <div class="card" style="width:306px;height:316px;position:absolute;left:0px;top:382px;">
+		        		<img src="images/budget-icon.png" style="width:96px;height:96px;position:absolute;left:92px;top:9px;" />
 		        		<div class="card-body">
-		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		        			<span class="navbar-toggler-icon"></span>
-		        		</button>
-		        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-		        			</ul>
-		        		</div>
+		        			<span style="width:149px;height:32px;position:absolute;left:56px;top:127px;"">Clever Budget</span>
+		        			<p style="width:244px;height:66px;position:absolute;left:22px;top:164px;"">Where Is My Money
+to find the answer, use our app."</p>
+		        			<button id="Button/Default/Link" style="width:82px;height:37px;position:absolute;left:10px;top:252px;color: #007aff;stroke:#707070;background-color:#ffffff;">more...</button>
 		        		</div>
 		        	</div>
 		        <div class="card" style="width:306px;height:316px;position:absolute;left:382px;top:382px;">
+		        		<img src="images/investor-icon.png" style="width:96px;height:96px;position:absolute;left:96px;top:19px;" />
 		        		<div class="card-body">
-		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		        			<span class="navbar-toggler-icon"></span>
-		        		</button>
-		        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-		        			</ul>
-		        		</div>
+		        			<span style="width:157px;height:32px;position:absolute;left:56px;top:127px;"">Clever Investor</span>
+		        			<p style="width:244px;height:66px;position:absolute;left:22px;top:164px;"">Sea Is Dangerous.
+So as the stock market, in order to sail safely you need our app."</p>
+		        			<button id="Button/Default/Link" style="width:82px;height:37px;position:absolute;left:10px;top:252px;color: #007aff;stroke:#707070;background-color:#ffffff;">more...</button>
 		        		</div>
 		        	</div>
 		        <div class="card" style="width:306px;height:316px;position:absolute;left:764px;top:382px;">
+		        		<img src="images/calculator-icon.png" style="width:96px;height:96px;position:absolute;left:96px;top:19px;" />
 		        		<div class="card-body">
-		        		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		        			<span class="navbar-toggler-icon"></span>
-		        		</button>
-		        		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		        			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-		        			</ul>
-		        		</div>
+		        			<span style="width:179px;height:32px;position:absolute;left:55px;top:127px;"">Clever Calculator</span>
+		        			<p style="width:245px;height:66px;position:absolute;left:22px;top:164px;"">A simple to use but full of functions essential tool for your phone"</p>
+		        			<button id="card-button" style="width:82px;height:37px;position:absolute;left:10px;top:252px;color: #007aff;stroke:#707070;background-color:#ffffff;">more...</button>
 		        		</div>
 		        	</div>
 	        </div>
@@ -141,13 +122,13 @@ We have many apps that all together will improve every aspect of your life.</spa
 	        <span id="about-text" style="width:1039px;height:144px;position:absolute;left:0px;top:67px;color: #707070;font-size:24;font-weight:Regular;">Business is the activity of making one’s living or making money by producing or buying and selling goods or services. Simply put, it is any activity or enterprise entered into for profit. It does not mean it is a company, a corporation, partnership, or have any such formal organization, but it can range from a street peddler to General Motors.The term is also often used colloquially but not by lawyers or public officials to refer to a company, but this article will not deal with that sense of the word.</span>
 	        <span id="about-title" style="width:204px;height:67px;position:absolute;left:0px;top:0px;color: #0069d9;font-size:32;font-weight:Bold;">Who We Are?
 </span>
-	        <button id="more-button" style="width:111px;height:37px;position:absolute;left:0px;top:212px;color:background-color:">undefined</button>
+	        <button id="more-button" style="width:111px;height:37px;position:absolute;left:0px;top:212px;">undefined</button>
         </div>
         <div id="benefits-section" style="width:1081px;height:538px;position:absolute;left:109px;top:2258px;">
 		        <svg height="429" width="556" style="position:absolute;left:640px;top:2373px;">
 	        	<rect width="538" height="411"border-radius: 10px; style="stroke:#707070;fill:#ffffff;"/>
 	        </svg>
-	        <img src="benefits-image.png" style=" stroke:#707070;stroke-width:1px;width:479px;height:301px;position:absolute;left:0px;top:169px;opacity:1;"/>
+	        <img src="images/benefits-image.png" style=" stroke:#707070;stroke-width:1px;width:479px;height:301px;position:absolute;left:0px;top:169px;opacity:1;"/>
 	        <span id="benefits-title" style="width:352px;height:86px;position:absolute;left:0px;top:0px;color: #0069d9;font-size:32;font-weight:Bold;">Why Choose Our Apps?
 </span>
 	        <span id="benefits-text" style="width:1031px;height:39px;position:absolute;left:0px;top:47px;color: #707070;font-size:20;font-weight:Regular;">There are many many things, why you should choose our apps, here are a few of them:</span>
@@ -189,7 +170,7 @@ Security is freedom from, or resilience against, potential harm or other unwante
         <div id="Team-section" style="width:300px;height:325px;position:absolute;left:109px;top:2897px;">
 	        <span id="Creative People" style="width:254px;height:43px;position:absolute;left:0px;top:0px;color: #0069d9;font-size:32;font-weight:Bold;">Creative People</span>
 	        <span id="I am Coding, therefore I exist ." style="width:300px;height:33px;position:absolute;left:0px;top:42px;color: #707070;font-size:20;font-weight:Regular;">I am Coding, therefore I exist .</span>
-	        <unknown id="Card/Titles, text, and links"  style=" width:288px; height:212px; margin-left:0px; margin-top: 113px;" " >Ahmed AbdulmonemPrograming is not about money or fame it is about passion.Developer</unknown>
+	        <Card id="Card/Titles, text, and links"  style=" width:288px; height:212px; margin-left:0px; margin-top: 113px;" " >Ahmed AbdulmonemPrograming is not about money or fame it is about passion.Developer</Card>
         </div>
         <div id="stat-section" style="width:814px;height:350px;position:absolute;left:109px;top:3280px;">
 	        <span id="Our Stats" style="width:157px;height:43px;position:absolute;left:0px;top:0px;color: #0069d9;font-size:32;font-weight:Bold;">Our Stats</span>

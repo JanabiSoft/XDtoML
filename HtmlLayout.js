@@ -3,19 +3,21 @@ const Image = require("scenegraph").ImageFill;
 const {GenerateShape} = require("./HtmlShape.js");
 const {CreateControl, CreateTextBlock, GetControlPathProperties, CreateIconLink} = require("./HtmlControl.js");
 const {CreateBlazorise} = require("./blazorise.js");
-const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition, GetColors} = require("./Common.js");
+const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition, GetColors, GetElementType} = require("./Common.js");
 const {CreateUserControl} = require("./UserControl.js");
 const {GenerateImage, GenerateSVG} = require("./Image.js");
 const { CreateFontIcon } = require("./Text.js");
+const {GetStyle} = require("./styles.js");
 
 
 function createLayout(item, tab) {
     if (item != null) {
         var itemTag = getLayoutTag(item);
-        var style = "style=\"" + GenerateStyle(item) + "\"";
+        var style = "style=\"" + GetStyle(item) + "\"";
         var attrib = GenerateAttributes(item);
         console.log("creating layout: " + item.name);
         var internalTab = "\t" + tab;
+        var elementType = GetElementType(item);
 
         var children = item.children;
         var content = "";
@@ -24,6 +26,7 @@ function createLayout(item, tab) {
                 if (element.name.endsWith("-icon-link")) {
                     content += "\n" + internalTab + CreateIconLink(element, internalTab);
                 }
+                else if(elementType == "control") content += "\n" + internalTab + CreateControl(element);
                 else if(element instanceof Rectangle && element.name == "frame"){
                     content += "\n" + internalTab + createBox(element, internalTab);
                 }

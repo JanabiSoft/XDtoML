@@ -6,6 +6,7 @@ const {CreateLayout} = require("./HtmlLayout.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {GenerateImage, GenerateSVG} = require("./Image.js");
 const Image = require("scenegraph").ImageFill;
+const { GetElementType } = require("./Common.js");
 
 
 let lastTab = 0;
@@ -63,10 +64,12 @@ function convert(selection) {
 }
 
 function createElement(element, tab) {
-        
+    var type = GetElementType(element);
+
     console.log("creating element: " + element.constructor.name + " name:" + element.name);
 
     if (element instanceof Rectangle && element.fill instanceof Image) return GenerateImage(element, tab);
+    else if(type == "control") return CreateControl(element, tab);
 
     else if (element instanceof Rectangle) return GenerateShape(element, tab);
         

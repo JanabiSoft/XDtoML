@@ -50,7 +50,6 @@ function getColors(item) {
     }
 
     return result;
-
 }
 
 
@@ -85,6 +84,34 @@ function getCornerRadii(radii) {
     return result;
 }
 
+function getElementType(item) {
+    var name = item.name.toLowerCase().split(" ").join("");
+    if(name.includes("hyperlinkbutton")) return "control";
+    else if(name.includes("appbarbutton") || name.includes("Command Bar / _Elements / List Item / Icon + Text")) return "control";
+    else if(name.includes("checkbox")) return "control";
+    else if(name.includes("radiobuttons") && !name.includes("Group")) return "control";
+    else if(name.includes("radiobuttongroup")) return "control";
+    else if(name.includes("textbox")) return "text";
+    else if(name.includes("combobox")) return "control";
+    else if(name.includes("rating")) return "control";
+    else if(name.includes("slider")) return "control";
+    else if(name.includes("toggleswitch") || name.includes("switch")) return "control";
+    else if(name.includes("pagetitle")) return "Custome";
+    else if(name.includes("pagetitle")) return "Custome";
+    else if(name.includes("button") || name.includes("accentbutton")) return "control";
+    else if(name.includes("pageheader")) return "PageHeader";
+    else if(name.includes("navbar")) return "control";
+    else if(name.endsWith("-card")) return "control";
+    else if(name.includes("-group")) return "layout";
+    else if(name.endsWith("-panel")) return "layout";
+    else if(name.endsWith("-image")) return "image";
+    else if(name.endsWith("-icon")) return "icon";
+    else if(name.endsWith("-shape")) return "shape";
+
+
+    else return "unknown";
+}
+
 module.exports = {
     IsCustomeControl: isCustomeControl,
     IsUserControl: isUserControl,
@@ -93,5 +120,6 @@ module.exports = {
     GetColors:getColors,
     GetPosition: getPosition,
     GetMargin: getMargin,
-    GetCornerRadii: getCornerRadii
+    GetCornerRadii: getCornerRadii,
+    GetElementType: getElementType
 };
