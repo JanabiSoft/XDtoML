@@ -403,7 +403,6 @@ function CreatePageHeader(item) {
     control += CreateText(item.children.at(0)) + "\n";
     control += GenerateShape(item.children.at(1)) + "\n";
     control += "</div>";
-
 }
  
 function CreateNavbar(item, tab) {
@@ -424,18 +423,17 @@ function CreateNavbar(item, tab) {
     control += internalTab + "\t<span class=\"navbar-toggler-icon\"></span>\n";
     control += internalTab + "</button>\n";
 
-
     //menu
     control += internalTab + "<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n";
     var menu = item.children.at(1);
     control += internalTab + "\t<ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\n";
     var navItems = "";
 
-    console.log("427 menu name: " + menu.constructor.name + " : " + menu.name);
-    console.log("428 menu children: " + menu.children.length);
+    console.log("432 menu name: " + menu.constructor.name + " : " + menu.name);
+    console.log("433 menu children: " + menu.children.length);
     
-    menu.children.forEach(function (element, i) {
-        console.log("431 i: " + i);
+    menu.children.forEachRight(function (element, i) {
+        console.log("436 i: " + i);
 
         // if(i == 0){
         //     navItems += internalTab +"<li class=\"nav-item\">\n";
@@ -456,14 +454,17 @@ function CreateNavbar(item, tab) {
         }
         navItems += internalTab +"\t\t</li>\n";
     });
+
     control += navItems + internalTab +"\t</ul>\n";
 
-    if(item.children.count == 3){
-        control += "<form class=\"d-flex\">\n" +
-        "\t<input class=\"form-control me-2\" type=\"search\" placeholder=\"Search\" aria-label=\"Search\">\n" +
-        "\t<button class=\"btn btn-outline-success\" type=\"submit\">Search</button>\n" +
-        "</form>\n";
+    console.log("navbar items count: " + item.children.length);
+    if(item.children.length == 3){
+        control += internalTab + "<form class=\"d-flex\">\n" +
+        internalTab + "\t<input class=\"form-control me-2\" type=\"search\" placeholder=\"Search\" aria-label=\"Search\">\n" +
+        internalTab + "\t<button class=\"btn btn-outline-success\" type=\"submit\">Search</button>\n" +
+        internalTab + "</form>\n";
     }
+
     control += internalTab + "</div>\n";
     control += tab + "</div>\n";
     control += tab + "</nav>";
@@ -536,10 +537,24 @@ function CreateCard(item, tab) {
     return control;
 }
 
+function createIconLink(item, tab) {
+    console.log("536 creating icon link: " + item.name);
+    var name = item.name.replace("-icon-link", "");
+    var txt = "bi-" + name;
+    var textColor = GetTextColor(item);
+    var style = "style=\"" + GenerateStyle(item) + textColor + "\"" ;
+    var attrib = GenerateAttributes(item);
+
+    var result = "<a href=\"#\">\n";
+    result += tab + "<i " + attrib + " " + style + " class=\"" + txt +"\"></i>\n";
+    result += "</a>";
+    return result;
+}
 
 module.exports = {
     CreateControl: createControl,
     CreateTextBlock: createTextBlock,
-    GetControlPathProperties: getControlPathProperties
+    GetControlPathProperties: getControlPathProperties,
+    CreateIconLink: createIconLink
 };
 
