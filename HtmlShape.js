@@ -1,4 +1,4 @@
-const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group} = require("scenegraph");
+const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, LinearGradient} = require("scenegraph");
 const {GetCornerRadii, GetColors, GetPosition} = require("./Common.js");
 
 function generateShape(item, tab) {
@@ -108,7 +108,7 @@ function createShape(item, tab) {
             containerStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\"";
             props += "width=\"" + item.width + "\"";
             props += " height=\"" + item.height + "\"";
-            props += GetCornerRadii(item.cornerRadii);
+            //elementStyle += GetCornerRadii(item.cornerRadii);
         } 
         else if(item instanceof Ellipse) {
             tag = "ellipse";
@@ -146,18 +146,53 @@ function createShape(item, tab) {
 
         containerStyle += GetPosition(item);
 
-        elementStyle += getShapeColors(item);
-
-        elementStyle += "\"";
-        containerStyle += "\"";
-
         element = "<" + tag;
-        if(tag == "polygon") result = containerStart + " " + containerStyle + ">\n@*" + element + " " + props + " " + elementStyle + "/>*@\n\t" + tab + svgEnd;
-        else result = containerStart + " " + containerStyle + ">\n" + internalTab + element + " " + props + " " + elementStyle + "/>" + internalTab + containerEnd;
+
+        var gradient = "";
+        if (item.fillEnabled && item.fill instanceof LinearGradient) {
+            var fill = item.fill;
+            gradient = "<defs>\n\t\t<linearGradient id=\"grad\" x1=\"" + (fill.startX * 100) + "%"  +
+             "\" y1=\"" + (fill.startY * 100) + "%" + "\" x2=\"" + (fill.endX * 100) + "%" +
+              "\" y2=\"" + (fill.endY * 100) + "%" + "\">";
+
+            fill.colorStops.forEach(ar => {
+                gradient += "\n\t\t\t<stop offset=\"" + (ar.stop * 100) + "%" + "\" style=\"stop-color:"+ ar.color.toHex() + ";stop-opacity:1\" />";
+            });
+
+            gradient += "\n\t\t</linearGradient>\n\t</defs>";
+            element += " fill=\"url('#grad')\" ";
+        }
+        else{
+            elementStyle += getShapeColors(item);
+        }
+
+        elementStyle += "\" ";
+        containerStyle += "\" ";
+
+        element += elementStyle + getShapeCornerRadii(item) + "\" ";
+        containerStart += containerStyle;
+
+        if(tag == "polygon") result = containerStart  + ">\n@*" + gradient + element + " " + props + "/>*@\n\t" + tab + svgEnd;
+        else result = containerStart + ">\n" + internalTab + gradient + internalTab +"\n"+ element +
+         " " + props + "/>" + internalTab + containerEnd;
         return result;
     }
 }
 
+function getShapeCornerRadii(item) {
+    var radii = item.cornerRadii;
+    var result = "";
+    if (radii.topLeft != 0) {
+        result = "rx=\"" + radii.topLeft + "\"";
+        result += " ry=\"" + radii.topLeft + "\"";
+
+    }
+
+    // if (radii.topRight != 0) result = "border-radius=\"" + radii.topRight + "px;";
+    // if (radii.bottomRight != 0) result = "border-radius=\"" + radii.bottomRight + "px;";
+    // if (radii.bottomLeft != 0) result = "border-radius=\"" + radii.bottomLeft + "px;";
+    return result;
+}
 
 function getMargin(item) {
     console.log("84" + item.name + " : " + item.boundsInParent);
@@ -194,7 +229,12 @@ function getShapeColors(item) {
         result += "stroke-width:" + item.storkeWidth + "px;";
     }
     if (item.fillEnabled) {
-        if(item.fill != null && item.fill.value != undefined) result += "fill:#" + item.fill.value.toString(16).slice(2) + ";";
+        if(item.fill != null && item.fill != undefined) {
+            if (item.fill instanceof LinearGradient) {
+                result += "background-image: linear-gradient(to bottom, #DFB9E0 , #C064C2, #842884, #561356, #2A042A);";
+            }
+            else result += "fill:#" + item.fill.value.toString(16).slice(2) + ";";
+        }
     }
 
     return result;
