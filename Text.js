@@ -28,14 +28,24 @@ function createParagraph(item) {
     return "<p " + attrib + " " + style +">" + txt + "</p>";
 }
 
+function createTextElement(item, tab) {
+    var content = "";
+    if (item.name.endsWith("icon") ) content += "\n" + tab + createFontIcon(item, tab);
+    else if (item.name.endsWith("-title") ) content += "\n" + tab + createTitle(item, tab);
+    else if (item.name.endsWith("-text") ) content += "\n" + tab + createParagraph(item, tab);
+    else content += "\n" + tab + createParagraph(item, tab);
+    return content;
+}
+
 function createFontIcon(item, tab) {
     console.log("creating font icon: " + item.name);
-    var name = item.name.replace("-icon", "");
-    var txt = "bi-" + name;
-    var textColor = GetTextColor(item);
-    var style = "style=\"" + GenerateStyle(item) + textColor + "\"" ;
+    //var name = item.name.replace("-icon", "");
+    //var txt = "bi-" + name;
+    //var textColor = GetTextColor(item);
+    var style = "style=\"" + getTextMeasure(item) + " " + GetTextStyle(item) + "\"" ;
     var attrib = GenerateAttributes(item);
-    return "<i " + attrib + " " + style + " class=\"" + txt +"\"></i>";
+    //return "<i " + attrib + " " + style + " class=\"" + txt +"\"></i>";
+    return "<i " + attrib + " " + style + " class=\"bi bi-emoji-smile\"></i>";
 }
 
 function getTextMeasure(item) {
@@ -49,5 +59,6 @@ module.exports = {
     CreateFontIcon: createFontIcon,
     GetTextMeasure: getTextMeasure,
     CreateTitle: createTitle,
-    CreateParagraph : createParagraph
+    CreateParagraph : createParagraph,
+    CreateTextElement : createTextElement
 };

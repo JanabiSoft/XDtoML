@@ -1,13 +1,12 @@
 let output = "";
 const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path, Artboard, RepeatGrid} = require("scenegraph");
-const {CreateControl, CreateTextBlock} = require("./HtmlControl.js");
 const {GenerateShape} = require("./HtmlShape.js");
 const {CreateLayout} = require("./HtmlLayout.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {GenerateImage, GenerateSVG} = require("./Image.js");
 const Image = require("scenegraph").ImageFill;
 const { GetElementType } = require("./Common.js");
-
+const {CreateControl, CreateTextBlock, GetControlPathProperties, CreateIconLink, CreateLink} = require("./HtmlControl.js");
 
 let lastTab = 0;
 
@@ -18,6 +17,7 @@ function convert(selection) {
     var page = "";
     var header = "\t<head>";
     header += "\n\t\t<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl\" crossorigin=\"anonymous\">";
+    header += "\n\t<link href=\"style.css\" rel=\"stylesheet\">";
     header += "\n\t</head>";
 
     var tab = "";
@@ -42,8 +42,8 @@ function convert(selection) {
             tab = getTabPosition(4);
             output += "\n" + tab + createElement(selection, tab) + "\n";
         }
-        var ending = "\n<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0\" crossorigin=\"anonymous\"></script>";
-        ending += "\n<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css\">";
+        var ending = "\n\n\t\t<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0\" crossorigin=\"anonymous\"></script>";
+        ending += "\n\t\t<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css\">";
         output += ending + "\n\t</body>\n</html>";
     }
     else{
@@ -68,7 +68,13 @@ function createElement(element, tab) {
 
     console.log("creating element: " + element.constructor.name + " name:" + element.name);
 
-    if (element instanceof Rectangle && element.fill instanceof Image) return GenerateImage(element, tab);
+    if (element.name.endsWith("-icon-link")) {
+        return CreateIconLink(element, tab);
+    }
+    else if (element.name.endsWith("-link")) {
+        return CreateLink(element, tab);
+    }
+    else if (element instanceof Rectangle && element.fill instanceof Image) return GenerateImage(element, tab);
     else if(type == "control") return CreateControl(element, tab);
 
     else if (element instanceof Rectangle) return GenerateShape(element, tab);

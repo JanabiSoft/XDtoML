@@ -1,14 +1,13 @@
 const {Text} = require("scenegraph");
 
-
 function getTextStyle(item) {
+    var style = "";
     if (item instanceof Text) {
-        var style;
-        style = "font-size:" + item.fontSize + ";";
+        style = "font-size:" + item.fontSize + "px;";
         style += "font-weight:" + item.fontStyle + ";";
         style += getTextColor(item);
-        return style;
     }
+    return style;
 }
 
 function getTextColor(item) {
@@ -31,6 +30,15 @@ function getStyle(item) {
 
     //return genProps;
     return genProps + position;
+}
+
+function getMainStyle(item) {
+    var style = "";
+
+    if(item.cornerRadii != undefined) style += getCornerRadii(item.cornerRadii);
+    style += getColors(item);
+
+    return style;
 }
 
 function getMeasurement(item) {
@@ -128,5 +136,6 @@ module.exports = {
     GetStyleColors: getColors,
     GetBaseColors: getBaseColors,
     GetMeasurement: getMeasurement,
-    GetBaseStyle: getBaseStyle
+    GetBaseStyle: getBaseStyle,
+    GetMainStyle : getMainStyle
 };

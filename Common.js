@@ -15,7 +15,8 @@ function isUserControl(type) {
 }
 
 function generateAttributes(ele) {
-    var id = "id=\"" + ele.name + "\"";
+    var id = "";
+    if(ele.name != ele.text) id = "id=\"" + ele.name + "\"";
     return id;
 }
 
@@ -101,7 +102,7 @@ function getElementType(item) {
     else if(name.includes("button") || name.includes("accentbutton")) return "control";
     else if(name.includes("pageheader")) return "PageHeader";
     else if(name.includes("navbar")) return "control";
-    else if(name.endsWith("-card")) return "control";
+    else if(name.endsWith("-card") | name.startsWith("card/")) return "control";
     else if(name.includes("-group")) return "layout";
     else if(name.endsWith("-panel")) return "layout";
     else if(name.endsWith("-image")) return "image";

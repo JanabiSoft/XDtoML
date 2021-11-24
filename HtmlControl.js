@@ -1,9 +1,9 @@
-const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance} = require("scenegraph");
-const {GenerateShape} = require("./HtmlShape.js");
-const {GenerateAttributes, GetColors, GetCornerRadii, } = require("./Common.js");
+const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance, GraphicNode, BooleanGroup} = require("scenegraph");
+const {GenerateShape, CreateShape} = require("./HtmlShape.js");
+const {GenerateAttributes, GetColors, GetCornerRadii, GetPosition, } = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
-const {CreateText, CreateFontIcon, CreateTitle, CreateParagraph} = require("./Text.js");
-const { GetTextStyle, GetTextColor, GetStyle, GetStyleColors, GetBaseColors, GetMeasurement, GetBaseStyle } = require("./styles.js");
+const {CreateText, CreateFontIcon, CreateTitle, CreateParagraph, CreateTextElement} = require("./Text.js");
+const { GetTextStyle, GetTextColor, GetStyle, GetStyleColors, GetBaseColors, GetMeasurement, GetBaseStyle, GetMainStyle } = require("./styles.js");
 
 function createControl(item, tab) {
    
@@ -20,7 +20,7 @@ function createControl(item, tab) {
         else if(itemName.includes("button") ) return createButton(item);
         else if(itemName.includes("pageheader")) return CreatePageHeader(item);
         else if(itemName.includes("navbar")) return CreateNavbar(item, tab);
-        else if(itemName.includes("-card")) return CreateCard(item, tab);
+        else if(itemName.includes("-card") | itemName.startsWith("card/")) return CreateCard(item, tab);
 
         var style = getStyle(item);
         var attrib = getAttributes(item);
@@ -483,30 +483,28 @@ function CreateCard(item, tab) {
     //var style = " style=\"width:" + item.globalDrawBounds.width.toString() + "px;";
     var internalTab = tab + "\t";
 
-    var button, icon, title, text, base, image;
+
+    var icon, title, text, base, image, body, bodyStyle, subtitle;
 
     item.children.forEach(function(ele, i){
-        if(ele.name.endsWith("button") | ele.name.startsWith("Button")) button = ele;
-        else if(ele.name.endsWith("title")) title = ele;
-        else if(ele.name.endsWith("text")) text = ele;
-        else if(ele.name.endsWith("icon")) icon = ele;
+        //if(ele.name.endsWith("button") | ele.name.startsWith("Button")) button = ele;
+        // else if(ele.name.endsWith("title")) title = ele;
+        // else if(ele.name.endsWith("text")) text = ele;
+        if(ele.name.endsWith("icon")) icon = ele;
         else if(ele.name.endsWith("image")) image = ele;
         else if(ele.name.includes("Card/Background")) base = ele.children.at(0);
+        else if(ele.name.endsWith("-base")) base = ele;
         else if(ele.name.includes("card-base")) base = ele;
+        else if(ele.name.includes("card-body")) body = ele;
     });
 
     var style = " style=\"" + GetMeasurement(item) + GetBaseStyle(base);
     var control = "<div class=\"card\"" + style + "\">\n";
 
-    // var icon = item.children.at(4);
-    // var title = item.children.at(3);
-    // var text = item.children.at(2);
-    // var button = item.children.at(1);
-
     //image
     if (image != undefined) {
         var imageStyle = " style=\"" + GetStyle(image) + "\"";
-        control += internalTab + "<img src=\"images/" + icon.name +".png\"" + imageStyle + " />\n";
+        control += internalTab + "<img src=\"images/" + image.name +".png\"" + imageStyle + " />\n";
     }
 
     //icon
@@ -516,28 +514,43 @@ function CreateCard(item, tab) {
         control += internalTab + CreateFontIcon(icon) + "\n";
     }
 
-    control += internalTab + "<div class=\"card-body\">\n";
+    //body
+    var iter;
+    if (body != undefined){
+        bodyStyle = " style=\"" + GetMeasurement(body) + "\"";
+            // var bodyStyle = " style=\"" + GetMeasurement(body) + "\"";
+        control += internalTab + "<div class=\"card-body\"" + bodyStyle + ">\n";
+
+        iter = body;
+    }
+    else iter = item;
+    
+    iter.children.forEach(function(ele, i){
+
+        if(ele.name.endsWith("button") | ele.name.startsWith("Button")) {
+            control += internalTab + "\t" + createButton(ele) + "\n";
+        }
+        else if(ele.name.endsWith("title")) control += internalTab + "\t" + CreateTitle(ele) + "\n";
+        else if(ele.name.endsWith("subtitle")) control += internalTab + "\t" + CreateTitle(ele) + "\n";
+        else if(ele.name.endsWith("text") | ele instanceof Text) control += internalTab + "\t" + CreateParagraph(ele) + "\n";
+        //else if(ele instanceof Text)  control += internalTab + "\t" + ele.text + "\n";
+    });
+
+
 
     // var titleStyle = " style=\"" + GetStyle(title) + "\"";
     // control += internalTab + "\t<span"  + titleStyle + "\">" + title.text + "</span>\n";
-    control += internalTab + "\t" + CreateTitle(title) + "\n";
 
 
     // var textStyle = " style=\"" + GetStyle(text) + "\"";
     // control += internalTab + "\t<p"+ textStyle + "\">" + text.text + "\"</p>\n";
-    control += internalTab + "\t" + CreateParagraph(text) + "\n";
-
-
-    if (button != undefined) {
-        control += internalTab + "\t" + createButton(button) + "\n";
-    }
 
 
     // var buttonStyle = " style=\"" + GetStyle(button) + GetStyleColors(button.children.at(0)) +"\"";
     // // buttonStyle += GetStyleColors(button.children.at(0));
     // control += internalTab + "\t<button" + buttonStyle + "\">" + button.children.at(1).text + "</button>\n";
 
-    control += internalTab + "</div>\n";
+    if (body != undefined) control += internalTab + "</div>\n";
 
 
     // control += internalTab + "<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
@@ -602,10 +615,58 @@ function createIconLink(item, tab) {
     return result;
 }
 
+function createCustomeLink(item, tab) {
+    console.log("creating custome link: " + item.name);
+
+    var content = "";
+
+    if (item instanceof Group) {
+        item.children.forEach(function (ele, i) {
+           if (ele.name.endsWith("icon")) {
+               content += "\t" + tab + CreateFontIcon(ele, tab) + "\n";
+           }
+           else {
+            content += "\t" + tab + createGraphicNode(ele, tab) + "\n";
+            }
+        });
+    }
+
+    var linkStyle = " style=\"" + GetPosition(item) + GetMainStyle(item) + "\"";
+    var element = "<a href=\"#\"" + linkStyle + ">\n";
+    element += content;
+    element += tab  + "</a>";
+
+    return element;
+}
+
+function createGraphicNode(item, tab) {
+    var element = "";
+            
+    if (item instanceof Rectangle | item instanceof Ellipse | item instanceof Line | item instanceof Polygon) 
+        return CreateShape(item, tab);
+    else if (item instanceof Text) return CreateTextElement(item, tab);
+    else if (item instanceof Path) {
+        if (item.name != "Footprint") {
+            content += getControlPathProperties(item, type);
+        }
+    }
+    else if (item instanceof BooleanGroup) {
+    }
+
+    return element;
+}
+
+function createLink(item, tab) {
+    if(item.name.endsWith("hyperlink")) return createHyperlink(item);
+    else if(item.name.endsWith("icon-link")) return createIconLink(item, tab);
+    else return createCustomeLink(item, tab);
+}
+
 module.exports = {
     CreateControl: createControl,
     CreateTextBlock: createTextBlock,
     GetControlPathProperties: getControlPathProperties,
-    CreateIconLink: createIconLink
+    CreateIconLink: createIconLink,
+    CreateLink : createLink
 };
 

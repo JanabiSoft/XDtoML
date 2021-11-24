@@ -1,42 +1,53 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance, RepeatGrid} = require("scenegraph");
 const Image = require("scenegraph").ImageFill;
-const {GenerateShape} = require("./HtmlShape.js");
-const {CreateControl, CreateTextBlock, GetControlPathProperties, CreateIconLink} = require("./HtmlControl.js");
+const {GenerateShape, CreateShape} = require("./HtmlShape.js");
+const {CreateControl, CreateTextBlock, GetControlPathProperties, CreateIconLink, CreateLink} = require("./HtmlControl.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {IsUserControl, IsCustomeControl, GenerateStyle, GenerateAttributes, GetPosition, GetColors, GetElementType} = require("./Common.js");
 const {CreateUserControl} = require("./UserControl.js");
 const {GenerateImage, GenerateSVG} = require("./Image.js");
-const { CreateFontIcon } = require("./Text.js");
-const {GetStyle} = require("./styles.js");
+const { CreateFontIcon, CreateTitle, CreateParagraph, CreateTextElement } = require("./Text.js");
+const {GetStyle, GetMeasurement, GetBaseStyle} = require("./styles.js");
 
 
 function createLayout(item, tab) {
     if (item != null) {
         var itemTag = getLayoutTag(item);
-        var style = "style=\"" + GetStyle(item) + "\"";
+        var style = "style=\"" + GetMeasurement(item);
         var attrib = GenerateAttributes(item);
-        console.log("creating layout: " + item.name);
+        console.log("creating layout: " + item.name + " of type: " + item.constructor.name);
         var internalTab = "\t" + tab;
-        var elementType = GetElementType(item);
 
         var children = item.children;
         var content = "";
         if(children.length > 1) {
             children.forEach(function (element, i) {
+                var elementType = GetElementType(element);
+
                 if (element.name.endsWith("-icon-link")) {
                     content += "\n" + internalTab + CreateIconLink(element, internalTab);
                 }
-                else if(elementType == "control") content += "\n" + internalTab + CreateControl(element);
-                else if(element instanceof Rectangle && element.name == "frame"){
-                    content += "\n" + internalTab + createBox(element, internalTab);
+                else if (element.name.endsWith("-link")) {
+                    content += "\n" + internalTab + CreateLink(element, internalTab);
                 }
+                else if(element instanceof Rectangle && (element.name.endsWith("-base") | element.name.endsWith("frame")) ) 
+                    style += GetBaseStyle(element);
+                else if(elementType == "control") content += "\n" + internalTab + CreateControl(element, internalTab);
+                // else if(element instanceof Rectangle && element.name == "frame"){
+                //     content += "\n" + internalTab + createBox(element, internalTab);
+                // }
                 else if (element instanceof Rectangle && element.fill instanceof Image) content += "\n" + internalTab + GenerateImage(element, internalTab);
                 else if (element instanceof Rectangle || element instanceof Ellipse || element instanceof Polygon || element instanceof Line) {
-                    content += "\n\t" + internalTab + GenerateShape(element, internalTab);
+                    content += "\n" + internalTab + CreateShape(element, internalTab);
                 }
                 else if (element instanceof Text) {
-                    if (element.name.endsWith("-icon") ) content += "\n" + internalTab + CreateFontIcon(element, internalTab);
-                    else content += "\n" + internalTab + CreateTextBlock(element, internalTab);
+                    content += "\n" + internalTab + CreateTextElement(element, internalTab);
+
+
+                    // if (element.name.endsWith("-icon") ) content += "\n" + internalTab + CreateFontIcon(element, internalTab);
+                    // else if (element.name.endsWith("-title") ) content += "\n" + internalTab + CreateTitle(element, internalTab);
+                    // else if (element.name.endsWith("-text") ) content += "\n" + internalTab + CreateParagraph(element, internalTab);
+                    // else content += "\n" + internalTab + CreateTextBlock(element, internalTab);
                 }
                 else if (element instanceof Path) {
                     content += "\n" + internalTab + GenerateShape(element, internalTab);
@@ -65,6 +76,8 @@ function createLayout(item, tab) {
         }
         else{
         }
+
+        style += "\"";
 
         return "<" + itemTag + " " + attrib + " " + style + ">" + content + "\n" + tab + "</" + itemTag + ">";
     }
