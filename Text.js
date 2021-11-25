@@ -1,5 +1,5 @@
 const {GenerateAttributes, GenerateStyle, GetColors, GetPosition} = require("./Common.js");
-const {GetTextColor, GetTextStyle, GetStyle} = require("./styles.js");
+const {GetTextStyle} = require("./styles.js");
 
 function createTextBlock(item) {
     console.log("creating Text: " + item.name);
@@ -25,7 +25,6 @@ function createParagraph(item, tab) {
 
     console.log("creating Paragraph: " + item.name);
     var txt = item.text;
-    //var textColor = "color:" + GetColors(item);
     var style = "style=\"" + getTextMeasure(item) + GetTextStyle(item) + "\"" ;
     var attrib = GenerateAttributes(item);
     return "<p " + attrib + " " + style +">" + txt + "</p>";
@@ -41,12 +40,8 @@ function createTextElement(item, tab) {
 function createFontIcon(item, tab) {
     var internalTab = tab + "\t";
     console.log("creating font icon: " + item.name);
-    //var name = item.name.replace("-icon", "");
-    //var txt = "bi-" + name;
-    //var textColor = GetTextColor(item);
     var style = "style=\"" + getTextMeasure(item) + " " + GetTextStyle(item) + "\"" ;
     var attrib = GenerateAttributes(item);
-    //return "<i " + attrib + " " + style + " class=\"" + txt +"\"></i>";
     return internalTab + "<i " + attrib + " " + style + " class=\"bi bi-emoji-smile\"></i>";
 }
 

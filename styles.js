@@ -23,12 +23,8 @@ function getStyle(item) {
     genProps += "width:" + width + "px;";
     genProps += "height:" + height + "px;";
     var position = getPosition(item);
-
-    //genProps += getMargin(item);
-    //console.log(item.cornerRadii);
     if(item.cornerRadii != undefined) genProps += getCornerRadii(item.cornerRadii);
 
-    //return genProps;
     return genProps + position;
 }
 
@@ -50,10 +46,6 @@ function getMeasurement(item) {
     genProps += "height:" + height + "px;";
     var position = getPosition(item);
 
-    //genProps += getMargin(item);
-    //console.log(item.cornerRadii);
-
-    //return genProps;
     return genProps + position;
 }
 
@@ -63,8 +55,6 @@ function getBaseStyle(item) {
 
     return style;
 }
-
-
 
 function getPosition(item) {
     var parentX = item.parent.localBounds.x;
@@ -93,14 +83,12 @@ function getColors(item) {
     }
     if (item.fill != null) {
         result += "background-color:#" + item.fill.value.toString(16).slice(2) + ";";
-        //result += "red";
     }
 
     return result;
 }
 
 function getBaseColors(item) {
-    console.log("getting colors");
     var result = "";
     if (item.stroke != null & item.stroke != undefined) {
         result = "stroke:#" + item.stroke.value.toString(16).slice(2) + ";";
@@ -110,13 +98,10 @@ function getBaseColors(item) {
     }
     if (item.fill != null) {
         result += "background-color:#" + item.fill.value.toString(16).slice(2) + ";";
-        //result += "red";
     }
 
     return result;
 }
-
-
 
 function getCornerRadii(radii) {
     var result = "";

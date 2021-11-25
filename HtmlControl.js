@@ -3,7 +3,7 @@ const {GenerateShape, CreateShape} = require("./HtmlShape.js");
 const {GenerateAttributes, GetColors, GetCornerRadii, GetPosition, } = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
 const {CreateText, CreateFontIcon, CreateTitle, CreateParagraph, CreateTextElement} = require("./Text.js");
-const { GetTextStyle, GetTextColor, GetStyle, GetStyleColors, GetBaseColors, GetMeasurement, GetBaseStyle, GetMainStyle } = require("./styles.js");
+const { GetTextStyle, GetTextColor, GetStyle, GetBaseColors, GetMeasurement, GetBaseStyle, GetMainStyle } = require("./styles.js");
 
 function createControl(item, tab) {
    
@@ -76,7 +76,6 @@ function createControl(item, tab) {
             result = "<" + type + " " + style + " >\n" + content + "\n\t\t" + tab + "</" + type + ">";
         }
         else {
-            //getting specific proeprties
             var specificProps = "";
             if(item.children.length > 1) {
                 item.children.forEach(function (element, i) {

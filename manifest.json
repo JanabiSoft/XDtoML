@@ -16,8 +16,8 @@
   } ],
   "uiEntryPoints" : [{
     "type" : "menu",
-    "label" : "HTML + Bootstrap",
+    "label" : "Convert to HTML + Bootstrap",
     "commandId" : "ConvertHTML"
   }],
-  "version" : "0.2"
+  "version" : "0.3"
 }

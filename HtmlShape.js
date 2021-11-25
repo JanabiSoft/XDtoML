@@ -1,5 +1,5 @@
-const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, LinearGradient} = require("scenegraph");
-const {GetCornerRadii, GetColors, GetPosition} = require("./Common.js");
+const {Path, Rectangle, Ellipse, Line, Polygon, Group, LinearGradient} = require("scenegraph");
+const {GetCornerRadii, GetPosition} = require("./Common.js");
 
 function generateShape(item, tab) {
     var result = "";
@@ -90,15 +90,9 @@ function createShape(item, tab) {
     var stroke, fill, tag;
     var internalTab = tab + "\t";
 
-
-    //var tag = getShapeTag(item.constructor.name);
-
     console.log("creating Shape: " + item.constructor.name + ":" + item.name);
 
     if (item != null) {
-        //var containerEnd = "\n" + tab + "</svg>";
-        //tab += "\t";
-
         if (item.stroke != null && item.stroke != undefined) stroke = item.stroke.value.toString(16).slice(2);
         if (item.fill != null) {
             if(item.fill.value != undefined) fill = item.fill.value.toString(16).slice(2);
@@ -109,7 +103,6 @@ function createShape(item, tab) {
             containerStart = "<svg height=\"" + item.globalDrawBounds.height + "\" width=\"" + item.globalDrawBounds.width + "\"";
             props += "width=\"" + item.width + "\"";
             props += " height=\"" + item.height + "\"";
-            //elementStyle += GetCornerRadii(item.cornerRadii);
         } 
         else if(item instanceof Ellipse) {
             tag = "ellipse";
@@ -129,8 +122,6 @@ function createShape(item, tab) {
             var y = item.start.y;
             var x2 = item.end.x;
             var y2 = item.end.y;
-            // console.log("line dime: start:" + item.start.x + "," + item.start.y + " end: " + item.end.x + "," + item.end.y);
-            // console.log("line bounds: x:" + item.boundsInParent.x + " y: " + item.boundsInParent.y);
             tag = "line";
 
             props += "x1=\"" + x + "\"";
@@ -190,9 +181,6 @@ function getShapeCornerRadii(item) {
     
         }
     
-        // if (radii.topRight != 0) result = "border-radius=\"" + radii.topRight + "px;";
-        // if (radii.bottomRight != 0) result = "border-radius=\"" + radii.bottomRight + "px;";
-        // if (radii.bottomLeft != 0) result = "border-radius=\"" + radii.bottomLeft + "px;";
         return result;
     }
     else return "";
@@ -224,7 +212,6 @@ function getShapeTag(shape) {
 }
 
 function getShapeColors(item) {
-    console.log("getting shape colors");
     var result = "";
     if (item.stroke != null) {
         result = "stroke:#" + item.stroke.value.toString(16).slice(2) + ";";

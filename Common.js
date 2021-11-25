@@ -54,11 +54,6 @@ function getColors(item) {
 }
 
 
-// function getColors(item) {
-//     if (item.fill != undefined) return "#" + item.fill.value.toString(16).slice(2) + ";";
-//     else return "";
-// }
-
 //support functions
 function getPosition(item) {
     var parentX = item.parent.localBounds.x;

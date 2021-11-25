@@ -1,12 +1,12 @@
 let output = "";
-const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path, Artboard, RepeatGrid} = require("scenegraph");
-const {GenerateShape, CreateShape} = require("./HtmlShape.js");
+const {Rectangle, Ellipse, Text, Polygon, Line, SymbolInstance, Group,  Artboard, RepeatGrid} = require("scenegraph");
+const {CreateShape} = require("./HtmlShape.js");
 const {CreateLayout, CreateGrid} = require("./HtmlLayout.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {GenerateImage, GenerateSVG} = require("./Image.js");
 const Image = require("scenegraph").ImageFill;
 const { GetElementType } = require("./Common.js");
-const {CreateControl, CreateTextBlock, GetControlPathProperties, CreateIconLink, CreateLink} = require("./HtmlControl.js");
+const {CreateControl, CreateTextBlock, CreateIconLink, CreateLink} = require("./HtmlControl.js");
 
 let lastTab = 0;
 
@@ -47,19 +47,11 @@ function convert(selection) {
         output += ending + "\n\t</body>\n</html>";
     }
     else{
-        //page = "<div>";
         tab = getTabPosition(0);
         output += tab + createElement(selection, tab);
     }
 
     return output;
-
-    // if(selection instanceof Artboard){
-        
-    //     return output += ending + "\n\t</body>\n</html>";
-    // }else{
-    //     return output += "\n</div>\n";
-    // }
 
 }
 
