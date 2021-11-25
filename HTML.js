@@ -1,7 +1,7 @@
 let output = "";
 const {Rectangle, Ellipse, Text, Polygon, Line, Color, SymbolInstance, Group, Path, Artboard, RepeatGrid} = require("scenegraph");
 const {GenerateShape, CreateShape} = require("./HtmlShape.js");
-const {CreateLayout} = require("./HtmlLayout.js");
+const {CreateLayout, CreateGrid} = require("./HtmlLayout.js");
 const {CreateBlazorise} = require("./blazorise.js");
 const {GenerateImage, GenerateSVG} = require("./Image.js");
 const Image = require("scenegraph").ImageFill;
@@ -33,7 +33,7 @@ function convert(selection) {
             children.forEach(function(item, i) {
                 console.log("33 creating artboard child: " + i);
                 tab = getTabPosition(8);
-                tag = createElement(item, tab);
+                tag = createElement(item, tab) + "\n";
              
                 output += "\n" + tab + tag;
             });
@@ -65,50 +65,51 @@ function convert(selection) {
 
 function createElement(element, tab) {
     var type = GetElementType(element);
+    var internalTab = tab + "\t";
 
     console.log("creating element: " + element.constructor.name + " name:" + element.name);
 
     if (element.name.endsWith("-icon-link")) {
-        return CreateIconLink(element, tab);
+        return CreateIconLink(element, internalTab);
     }
     else if (element.name.endsWith("-link")) {
-        return CreateLink(element, tab);
+        return CreateLink(element, internalTab);
     }
-    else if (element instanceof Rectangle && element.fill instanceof Image) return GenerateImage(element, tab);
-    else if(type == "control") return CreateControl(element, tab);
+    else if (element instanceof Rectangle && element.fill instanceof Image) return GenerateImage(element, internalTab);
+    else if(type == "control") return CreateControl(element, internalTab);
 
-    else if (element instanceof Rectangle) return CreateShape(element, tab);
+    else if (element instanceof Rectangle) return CreateShape(element, internalTab);
         
     else if (element instanceof Ellipse) {
-        return CreateShape(element, tab);
+        return CreateShape(element, internalTab);
     }
     else if (element instanceof Polygon) {
-        return CreateShape(element, tab);
+        return CreateShape(element, internalTab);
     }
     else if (element instanceof Line) {
-        return CreateShape(element, tab);
+        return CreateShape(element, internalTab);
     }
     else if (element instanceof Text && element.name.includes("Hyperlink")) {
-        return CreateControl(element, tab);
+        return CreateControl(element, internalTab);
     }
     else if (element instanceof Text) {
-        return CreateTextBlock(element, tab);
+        return CreateTextBlock(element, internalTab);
     }
     else if (element instanceof SymbolInstance && isControl(element.name)) {
-        return CreateCustomeControl(element, tab);
+        return CreateCustomeControl(element, internalTab);
     }
     else if (element instanceof SymbolInstance && isLayout(element.name)) {
-        return CreateLayout(element, tab);
+        return CreateLayout(element, internalTab);
     }
     else if (element instanceof SymbolInstance) {
-        return CreateControl(element, tab);
+        return CreateControl(element, internalTab);
     }
     else if (element instanceof Group) {
-        if(element.name.endsWith("-symbol") | element.name.endsWith("-image")) return GenerateSVG(element, tab);
-        else return CreateLayout(element, tab);
+        if(element.name.endsWith("-symbol") | element.name.endsWith("-image")) return GenerateSVG(element, internalTab);
+        else return CreateLayout(element, internalTab);
     }
     else if (element instanceof RepeatGrid) {
-        return CreateLayout(element, tab);
+        return CreateGrid(element, internalTab);
     }
     else{
         return "";

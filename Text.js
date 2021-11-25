@@ -10,7 +10,8 @@ function createTextBlock(item) {
     return "<span " + attrib + " " + style +">" + txt + "</span>";
 }
 
-function createTitle(item) {
+function createTitle(item, tab) {
+    //var internalTab = tab + "\t";
     console.log("creating Title: " + item.name);
     var txt = item.text;
     //var textColor = "color:" + GetColors(item);
@@ -19,7 +20,9 @@ function createTitle(item) {
     return "<span " + attrib + " " + style +">" + txt + "</span>";
 }
 
-function createParagraph(item) {
+function createParagraph(item, tab) {
+    //var internalTab = tab + "\t";
+
     console.log("creating Paragraph: " + item.name);
     var txt = item.text;
     //var textColor = "color:" + GetColors(item);
@@ -29,15 +32,14 @@ function createParagraph(item) {
 }
 
 function createTextElement(item, tab) {
-    var content = "";
-    if (item.name.endsWith("icon") ) content += "\n" + tab + createFontIcon(item, tab);
-    else if (item.name.endsWith("-title") ) content += "\n" + tab + createTitle(item, tab);
-    else if (item.name.endsWith("-text") ) content += "\n" + tab + createParagraph(item, tab);
-    else content += "\n" + tab + createParagraph(item, tab);
-    return content;
+    if (item.name.endsWith("icon") ) return createFontIcon(item, tab);
+    else if (item.name.endsWith("-title") ) return createTitle(item, tab);
+    else if (item.name.endsWith("-text") ) return createParagraph(item, tab);
+    else return createParagraph(item, tab);
 }
 
 function createFontIcon(item, tab) {
+    var internalTab = tab + "\t";
     console.log("creating font icon: " + item.name);
     //var name = item.name.replace("-icon", "");
     //var txt = "bi-" + name;
@@ -45,7 +47,7 @@ function createFontIcon(item, tab) {
     var style = "style=\"" + getTextMeasure(item) + " " + GetTextStyle(item) + "\"" ;
     var attrib = GenerateAttributes(item);
     //return "<i " + attrib + " " + style + " class=\"" + txt +"\"></i>";
-    return "<i " + attrib + " " + style + " class=\"bi bi-emoji-smile\"></i>";
+    return internalTab + "<i " + attrib + " " + style + " class=\"bi bi-emoji-smile\"></i>";
 }
 
 function getTextMeasure(item) {

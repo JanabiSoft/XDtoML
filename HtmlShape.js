@@ -88,15 +88,16 @@ function createShape(item, tab) {
     var containerStyle = "style=\"";
     var containerStart = "";
     var stroke, fill, tag;
+    var internalTab = tab + "\t";
+
 
     //var tag = getShapeTag(item.constructor.name);
 
     console.log("creating Shape: " + item.constructor.name + ":" + item.name);
 
     if (item != null) {
-        var containerEnd = "\n" + tab + "</svg>";
+        //var containerEnd = "\n" + tab + "</svg>";
         //tab += "\t";
-        var internalTab = tab + "\t";
 
         if (item.stroke != null && item.stroke != undefined) stroke = item.stroke.value.toString(16).slice(2);
         if (item.fill != null) {
@@ -146,10 +147,11 @@ function createShape(item, tab) {
 
         containerStyle += GetPosition(item);
 
-        element = "<" + tag;
+        element = "<" + tag + " ";
 
         var gradient = "";
         if (item.fillEnabled && item.fill instanceof LinearGradient) {
+            gradient += "\n" + internalTab;
             var fill = item.fill;
             gradient = "<defs>\n\t\t<linearGradient id=\"grad\" x1=\"" + (fill.startX * 100) + "%"  +
              "\" y1=\"" + (fill.startY * 100) + "%" + "\" x2=\"" + (fill.endX * 100) + "%" +
@@ -159,7 +161,7 @@ function createShape(item, tab) {
                 gradient += "\n\t\t\t<stop offset=\"" + (ar.stop * 100) + "%" + "\" style=\"stop-color:"+ ar.color.toHex() + ";stop-opacity:1\" />";
             });
 
-            gradient += "\n\t\t</linearGradient>\n\t</defs>";
+            gradient += "\n\t\t</linearGradient>\n\t</defs>\n";
             element += " fill=\"url('#grad')\" ";
         }
         else{
@@ -169,29 +171,31 @@ function createShape(item, tab) {
         elementStyle += "\" ";
         containerStyle += "\" ";
 
-        element += elementStyle + getShapeCornerRadii(item) + "\" ";
+        element += elementStyle + props + getShapeCornerRadii(item) + "\" ";
         containerStart += containerStyle;
 
         if(tag == "polygon") result = containerStart  + ">\n@*" + gradient + element + " " + props + "/>*@\n\t" + tab + svgEnd;
-        else result = containerStart + ">\n" + internalTab + gradient + internalTab +"\n"+ element +
-         " " + props + "/>" + internalTab + containerEnd;
+        else result = containerStart + ">\n" + gradient + internalTab  + element  + "/>" + "\n" + tab + "</svg>";
         return result;
     }
 }
 
 function getShapeCornerRadii(item) {
-    var radii = item.cornerRadii;
-    var result = "";
-    if (radii.topLeft != 0) {
-        result = "rx=\"" + radii.topLeft + "\"";
-        result += " ry=\"" + radii.topLeft + "\"";
-
+    if (item.cornerRadii != undefined) {
+        var radii = item.cornerRadii;
+        var result = "";
+        if (radii.topLeft != 0) {
+            result = "rx=\"" + radii.topLeft + "\"";
+            result += " ry=\"" + radii.topLeft + "\"";
+    
+        }
+    
+        // if (radii.topRight != 0) result = "border-radius=\"" + radii.topRight + "px;";
+        // if (radii.bottomRight != 0) result = "border-radius=\"" + radii.bottomRight + "px;";
+        // if (radii.bottomLeft != 0) result = "border-radius=\"" + radii.bottomLeft + "px;";
+        return result;
     }
-
-    // if (radii.topRight != 0) result = "border-radius=\"" + radii.topRight + "px;";
-    // if (radii.bottomRight != 0) result = "border-radius=\"" + radii.bottomRight + "px;";
-    // if (radii.bottomLeft != 0) result = "border-radius=\"" + radii.bottomLeft + "px;";
-    return result;
+    else return "";
 }
 
 function getMargin(item) {

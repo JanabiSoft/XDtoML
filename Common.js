@@ -16,7 +16,7 @@ function isUserControl(type) {
 
 function generateAttributes(ele) {
     var id = "";
-    if(ele.name != ele.text) id = "id=\"" + ele.name + "\"";
+    if(ele.name != ele.text) id = " id=\"" + ele.name + "\"";
     return id;
 }
 

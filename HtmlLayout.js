@@ -9,18 +9,17 @@ const {GenerateImage, GenerateSVG} = require("./Image.js");
 const { CreateFontIcon, CreateTitle, CreateParagraph, CreateTextElement } = require("./Text.js");
 const {GetStyle, GetMeasurement, GetBaseStyle} = require("./styles.js");
 
-
 function createLayout(item, tab) {
     if (item != null) {
         var itemTag = getLayoutTag(item);
         var style = "style=\"" + GetMeasurement(item);
         var attrib = GenerateAttributes(item);
         console.log("creating layout: " + item.name + " of type: " + item.constructor.name);
-        var internalTab = "\t" + tab;
+        var internalTab = tab + "\t";
 
         var children = item.children;
         var content = "";
-        if(children.length > 1) {
+        if(children.length > 0) {
             children.forEach(function (element, i) {
                 var elementType = GetElementType(element);
 
@@ -67,14 +66,12 @@ function createLayout(item, tab) {
                 }
                 else if (element instanceof Group) {
                     if(element.name.endsWith("-symbol") | element.name.endsWith("-image")) content += "\n" + internalTab + GenerateSVG(element, internalTab);
-                    else content += "\n" + internalTab + createLayout(element, internalTab);
+                    else content += "\n\n" + internalTab + createLayout(element, internalTab);
                 }
                 else if (element instanceof RepeatGrid) {
-                    content += "\n\t\t" + internalTab + createGrid(element, internalTab);
+                    content += "\n" + internalTab + createGrid(element, internalTab);
                 }
             });
-        }
-        else{
         }
 
         style += "\"";
@@ -83,28 +80,54 @@ function createLayout(item, tab) {
     }
 }
 
-function createGrid(item) {
+function createGrid(item, tab) {
     if (item != null) {
         console.log("creating grid: " + item.name);
         var itemTag = "div";
-        var result = "<" + itemTag + " class=\"grid-container\""; 
-        var style = "style=\"" + GenerateGridStyle(item) + "\"";
+        var container = "<" + itemTag + " class=\"container\""; 
+        var style = " style=\"" + GetMeasurement(item) + "\"";
         var attrib = GenerateAttributes(item);
         console.log("creating grid: " + item.name);
+        var rows = "\n";
+        var internalTab = tab + "\t";
 
-        var children = item.children;
-        var content = "";
-        if(children.length > 1) {
-            children.forEach(function (element, i) {
-                content += "\t\t<div class=\"grid-item\">\n" + createLayout(element) + "\n</div>";
+        var colIndex = 0;
+        for (let index = 0; index < item.numRows; index ++) {
+            var rowTab = internalTab + "\t";
+            var row = internalTab + "<div class=\"row\">";
+            if (item.numColumns == 1) {
+                row += "\n" + rowTab + createLayout(item.children.at(index), rowTab) + "\n" + internalTab + "</div> <!--row-->\n";
+            }
+            else{
+                var columns = "";
+                var colTab = internalTab + "\t";
+                for (let index2 = 0; index2 < item.numColumns; index2++) {
+                    var column = colTab + "<div class=\"col\"><!--"+ index2 + colIndex + " -->  \n";
+                    column += colTab + "\t" + createLayout(item.children.at(index2 + colIndex), colTab+ "\t");
+                    column += "\n" + colTab + "</div><!--col-->\n";
+                    columns += column;
+                }
+                row += "\n" + columns  + internalTab + "</div> <!--row-->\n";
+            }
+            rows += row;
+            colIndex += item.numColumns;
+        }
+
+        var result = container + style + attrib + ">" + rows + tab + "</div> <!--container-->";
+
+        // var children = item.children;
+        // var content = "";
+        // if(children.length > 1) {
+        //     children.forEach(function (element, i) {
+        //         content += "\t\t<div class=\"grid-item\">\n" + createLayout(element) + "\n</div>";
                 
-            });
-        }
-        else{
-        }
+        //     });
+        // }
+        // else{
+        // }
 
-        result += " " + attrib + " " + style + ">" + content;
-        result += "\n</div>";
+        // result += " " + attrib + " " + style + ">" + content;
+        // result += "\n</div>";
 
         return result;
     }
@@ -137,7 +160,7 @@ function GenerateGridStyle(item) {
     return genProps + position;
 }
 
-
 module.exports = {
     CreateLayout: createLayout,
+    CreateGrid : createGrid
 };
