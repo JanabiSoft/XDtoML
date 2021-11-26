@@ -1,26 +1,63 @@
 const {Path, Text, Rectangle, Ellipse, Line, Polygon, Group, SymbolInstance, GraphicNode, BooleanGroup} = require("scenegraph");
 const {GenerateShape, CreateShape} = require("./HtmlShape.js");
-const {GenerateAttributes, GetColors, GetCornerRadii, GetPosition, } = require("./Common.js");
+const {GenerateAttributes, GetColors, GetCornerRadii, GetPosition, SetCss, IsLayout } = require("./Common.js");
 const {GenerateStyle} = require("./Common.js");
-const {CreateText, CreateFontIcon, CreateTitle, CreateParagraph, CreateTextElement} = require("./Text.js");
-const { GetTextStyle, GetTextColor, GetStyle, GetBaseColors, GetMeasurement, GetBaseStyle, GetMainStyle } = require("./styles.js");
+const {CreateText, CreateFontIcon, CreateTitle, CreateParagraph, CreateTextElement, GetTextMeasure} = require("./Text.js");
+const {GetTextStyle, GetTextColor, GetStyle, GetBaseColors, GetMeasurement, GetBaseStyle, GetMainStyle} = require("./styles.js");
+
+function createCustomeControl(item, tab) {
+   
+    if (item != null) {
+        var internalTab = tab + "\t";
+
+        //var type = getCustomeControlType(item);
+        var itemName = item.name.toLowerCase().split(" ").join("");
+        console.log("creating custoem control: " + item.constructor.name + " type: " + type + " name: " + itemName );
+        if (itemName.endsWith("toggle")) return createToggle(item, tab);
+    }
+}
+
+function createToggle(item, tab) {
+    var internalTab = tab + "\t";
+    console.log("creating toggle from: " + item.name);
+    var labelStyle = " style=\"font-size:" + item.fontSize + "px;\"";
+    var inputStyle = " style=\"display: none;margin-left: 2em;position: relative;cursor: pointer;";
+    var iconStyle = " style=\"color: gold;position: absolute;top: 0.4em;left: -1.25em;font-size: 0.75em;";
+    var emptyStyle = iconStyle + "color: gray;";
+    var fillStyle = iconStyle + "transition: opacity 0.2s ease-in-out;";
+    
+    var ele = "<label for=\"" + item.name + "\" class=\"custom-checkbox\"" + labelStyle + "\">";
+    ele += internalTab + "<input type=\"checkbox\" id=\"" + item.name + "\"" + inputStyle + "\"/>";
+    ele += internalTab + "<i class=\"glyphicon glyphicon-star-empty\"" + emptyStyle + "\"></i>";
+    ele += internalTab + "<i class=\"glyphicon glyphicon-star\"" + emptyStyle + "></i>";
+    ele += "</label>";
+
+    //Css += ".custom-checkbox:hover .glyphicon-star{\nopacity: 0.5;\n}\n\n.custom-checkbox input[type=\"checkbox\"]:checked ~ .glyphicon-star\n{opacity: 1;\n}";
+
+    return ele;
+}
 
 function createControl(item, tab) {
    
     if (item != null) {
         tab += "\t";
 
-        var type = getControlType(item);
         var itemName = item.name.toLowerCase().split(" ").join("");
         console.log("16 creating control: " + item.constructor.name + " type: " + type + " name: " + itemName );
         if (itemName.includes("hyperlink")) return createHyperlink(item);
         else if(itemName.includes("accentbutton") ) return createButton(item);
         else if(itemName.includes("radiobuttongroup") ) return createRadioButtons(item);
         else if(itemName.includes("combobox") ) return createSelect(item);
+        else if(itemName.includes("icon-button") ) return iconButton(item, tab);
         else if(itemName.includes("button") ) return createButton(item);
         else if(itemName.includes("pageheader")) return CreatePageHeader(item);
         else if(itemName.includes("navbar")) return CreateNavbar(item, tab);
         else if(itemName.includes("-card") | itemName.startsWith("card/")) return CreateCard(item, tab);
+        else if(itemName.includes("progress bar") | itemName.includes("progressbar") | itemName.includes("progress-bar")) 
+            return createProgress(item, tab);
+        else if(itemName.includes("inputbox")) return createInput(item, tab);
+
+        var type = getControlType(item);
 
         var style = getStyle(item);
         var attrib = getAttributes(item);
@@ -119,6 +156,7 @@ function createControl(item, tab) {
     }
 }
 
+
 function getControlType(item) {
     var name = item.name.toLowerCase().split(" ").join("");
     if(name.includes("hyperlinkbutton")) return "Hyperlink";
@@ -139,6 +177,13 @@ function getControlType(item) {
     else if(name.includes("card")) return "Card";
     else return "unknown";
 }
+
+// function getCustomeControlType(item) {
+//     var name = item.name.toLowerCase().split(" ").join("");
+//     if(name.endsWith("toggle")) return "Toggle";
+//     else return "unknown";
+// }
+
 
 function getControlTextProperties(tag, item) {
     var prop = "";
@@ -211,13 +256,13 @@ function getControlPropertiesFromGroup(item, tag) {
     return props;
 }
 
-function IsLayout(type) {
-    if (type == "div") {
-        return true;
-    } else {
-        return false;
-    }
-}
+// function IsLayout(type) {
+//     if (type == "div") {
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
 
 function isGroupControl(type) {
     var typ = type.toLowerCase().split(" ").join("");
@@ -394,6 +439,15 @@ function createButton(item) {
     var style = " style=\"" + GetStyle(item) + labelColor + baseColors;
 
     return "<button " + attributes + style + "\">" + label + '</button>';
+}
+
+function createProgress(item, tab) {
+    console.log("creating progress bar: " + item.name);
+
+    var ele = "<div class=\"progress\">\n";
+    ele += tab + "<div class=\"progress-bar\" role=\"progressbar\" style=\"width: 25%\" aria-valuenow=\"25\" aria-valuemin=\"0\" aria-valuemax=\"100\">";
+    ele += tab + "\n</div>";
+    return ele;
 }
 
 function CreatePageHeader(item) {
@@ -661,11 +715,43 @@ function createLink(item, tab) {
     else return createCustomeLink(item, tab);
 }
 
+function createInput(item, tab) {
+    var header, hint;
+    if (IsLayout(item)) {
+        item.children.forEach(function (element) {
+            if(element instanceof Text && element.name.includes("header")) header = element.text;
+            if(element instanceof Text && element.name.includes("Hint")) hint = element.text;
+        });
+    }
+    
+    var input = '<input type="text" style="' + GetMeasurement(item);
+    var result = "<div>";
+    if(hint != undefined) {
+        hint = ' placeholder="' + hint + '"';
+        input += hint;
+    }
+
+    return tab + result + "\n" + input + "\"></input>\n" + tab + "</div>";
+}
+
+function iconButton(item, tab) {
+    var internalTab = tab + "\t";
+    console.log("creating icon button: " + item.name);
+    var buttonStyle = " style=\"" + GetMeasurement(item) + "background-color: transparent;border: none;";
+    var attrib = GenerateAttributes(item);
+     var iconStyle = " style=\"" + GetTextColor(item) + ";padding: 12px 16px;" + item.fontSize + "px;cursor: pointer;\"";
+
+    var ele = "<button class=\"btn\"" + attrib + buttonStyle + "\"><i class=\"bi bi-emoji-smile\"" + iconStyle + "></i></button>";
+
+    SetCss(".btn:hover { background-color: RoyalBlue; }");
+    return ele;
+
+}
+
 module.exports = {
     CreateControl: createControl,
-    CreateTextBlock: createTextBlock,
     GetControlPathProperties: getControlPathProperties,
     CreateIconLink: createIconLink,
-    CreateLink : createLink
+    CreateLink: createLink,
+    CreateCustomeControl: createCustomeControl
 };
-
