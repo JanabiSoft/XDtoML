@@ -165,7 +165,7 @@ function createShape(item, tab) {
         element += elementStyle + props + getShapeCornerRadii(item) + "\" ";
         containerStart += containerStyle;
 
-        if(tag == "polygon") result = containerStart  + ">\n@*" + gradient + element + " " + props + "/>*@\n\t" + tab + svgEnd;
+        if(tag == "polygon") result = containerStart  + ">\n@*" + gradient + element + " " + props + "/>*@\n\t" + tab + "</svg>";
         else result = containerStart + ">\n" + gradient + internalTab  + element  + "/>" + "\n" + tab + "</svg>";
         return result;
     }

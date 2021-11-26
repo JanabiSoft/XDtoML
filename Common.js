@@ -103,10 +103,25 @@ function getElementType(item) {
     else if(name.endsWith("-image")) return "image";
     else if(name.endsWith("-icon")) return "icon";
     else if(name.endsWith("-shape")) return "shape";
-
-
+    else if(name.includes("progress bar") | name.includes("progressbar") | name.includes("progress-bar")) return "control";
+    else if(name.includes("inputbox")) return "control";
+    
+    
+    
     else return "unknown";
 }
+
+function setCss(input) {
+    var css = window.sessionStorage.getItem("css");
+    css += "\t" + input + "\n";
+    window.sessionStorage.setItem("css", css);
+}
+
+function isLayout(item) {
+    if(item instanceof Group) return true;
+    else return false;
+}
+
 
 module.exports = {
     IsCustomeControl: isCustomeControl,
@@ -117,5 +132,7 @@ module.exports = {
     GetPosition: getPosition,
     GetMargin: getMargin,
     GetCornerRadii: getCornerRadii,
-    GetElementType: getElementType
+    GetElementType: getElementType,
+    SetCss: setCss,
+    IsLayout: isLayout
 };

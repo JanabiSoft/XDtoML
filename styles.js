@@ -122,5 +122,5 @@ module.exports = {
     GetBaseColors: getBaseColors,
     GetMeasurement: getMeasurement,
     GetBaseStyle: getBaseStyle,
-    GetMainStyle : getMainStyle
+    GetMainStyle: getMainStyle
 };

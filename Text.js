@@ -1,4 +1,5 @@
 const {GenerateAttributes, GenerateStyle, GetColors, GetPosition} = require("./Common.js");
+const {CreateCustomeControl} = require("./HtmlControl.js");
 const {GetTextStyle} = require("./styles.js");
 
 function createTextBlock(item) {
@@ -32,6 +33,8 @@ function createParagraph(item, tab) {
 
 function createTextElement(item, tab) {
     if (item.name.endsWith("icon") ) return createFontIcon(item, tab);
+    else if (item.name.endsWith("toggle") ) return CreateCustomeControl(item, tab);
+    //else if (item.name.endsWith("toggle") ) return "";
     else if (item.name.endsWith("-title") ) return createTitle(item, tab);
     else if (item.name.endsWith("-text") ) return createParagraph(item, tab);
     else return createParagraph(item, tab);
@@ -46,9 +49,8 @@ function createFontIcon(item, tab) {
 }
 
 function getTextMeasure(item) {
-    var genProps = "";
     var position = GetPosition(item);
-    return genProps + position;
+    return position;
 }
 
 module.exports = {
@@ -56,6 +58,6 @@ module.exports = {
     CreateFontIcon: createFontIcon,
     GetTextMeasure: getTextMeasure,
     CreateTitle: createTitle,
-    CreateParagraph : createParagraph,
-    CreateTextElement : createTextElement
+    CreateParagraph: createParagraph,
+    CreateTextElement: createTextElement
 };

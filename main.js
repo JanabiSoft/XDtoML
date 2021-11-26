@@ -1,6 +1,12 @@
 let clipboard = require("clipboard");
 const { ConvertHTML } = require("./HTML");
 
+// const psCore = require('photoshop').core;
+// psCore.showAlert({ message: 'Warp Factor 9!'});
+
+//const fs = require("uxp").storage.localFileSystem;
+
+
 //main function
 function convertHtml(selection) { 
 
@@ -16,6 +22,7 @@ function convertHtml(selection) {
 }
 
 function initializePluginData() {
+    window.sessionStorage.setItem("css", "");
     var cfk = window.localStorage.getItem("component_framework");
     if (cfk == null) window.localStorage.setItem("component_framework", "blazorise");
 }

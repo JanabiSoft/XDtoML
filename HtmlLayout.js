@@ -11,6 +11,7 @@ const {GetMeasurement, GetBaseStyle} = require("./styles.js");
 
 function createLayout(item, tab) {
     if (item != null) {
+        //var type = GetElementType(element);
         var itemTag = getLayoutTag(item);
         var style = "style=\"" + GetMeasurement(item);
         var attrib = GenerateAttributes(item);
@@ -23,13 +24,16 @@ function createLayout(item, tab) {
             children.forEach(function (element, i) {
                 var elementType = GetElementType(element);
 
-                if (element.name.endsWith("-icon-link")) {
+                if (elementType == "control") {
+                    content += "\n" + internalTab + CreateControl(element, internalTab);
+                }
+                else if (element.name.endsWith("-icon-link")) {
                     content += "\n" + internalTab + CreateIconLink(element, internalTab);
                 }
                 else if (element.name.endsWith("-link")) {
                     content += "\n" + internalTab + CreateLink(element, internalTab);
                 }
-                else if(element instanceof Rectangle && (element.name.endsWith("-base") | element.name.endsWith("frame")) ) 
+                else if(element instanceof Rectangle && (element.name.endsWith("base") | element.name.endsWith("frame")) ) 
                     style += GetBaseStyle(element);
                 else if(elementType == "control") content += "\n" + internalTab + CreateControl(element, internalTab);
                 else if (element instanceof Rectangle && element.fill instanceof Image) content += "\n" + internalTab + GenerateImage(element, internalTab);
@@ -135,5 +139,5 @@ function GenerateGridStyle(item) {
 
 module.exports = {
     CreateLayout: createLayout,
-    CreateGrid : createGrid
+    CreateGrid: createGrid
 };

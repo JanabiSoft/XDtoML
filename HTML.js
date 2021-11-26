@@ -6,9 +6,11 @@ const {CreateBlazorise} = require("./blazorise.js");
 const {GenerateImage, GenerateSVG} = require("./Image.js");
 const Image = require("scenegraph").ImageFill;
 const { GetElementType } = require("./Common.js");
-const {CreateControl, CreateTextBlock, CreateIconLink, CreateLink} = require("./HtmlControl.js");
+const {CreateControl, CreateIconLink, CreateLink} = require("./HtmlControl.js");
+const { CreateTextElement } = require("./Text.js");
 
 let lastTab = 0;
+
 
 function convert(selection) {
     console.log("converting to html: " + selection.constructor.name);
@@ -51,8 +53,12 @@ function convert(selection) {
         output += tab + createElement(selection, tab);
     }
 
-    return output;
+    var css = "\n\n<style>\n\t";
+    css += window.sessionStorage.getItem("css");
+    css += "\n</style>";
 
+    output += css;
+    return output;
 }
 
 function createElement(element, tab) {
@@ -85,11 +91,11 @@ function createElement(element, tab) {
         return CreateControl(element, internalTab);
     }
     else if (element instanceof Text) {
-        return CreateTextBlock(element, internalTab);
+        return CreateTextElement(element, internalTab);
     }
-    else if (element instanceof SymbolInstance && isControl(element.name)) {
-        return CreateCustomeControl(element, internalTab);
-    }
+    // else if (element instanceof SymbolInstance && isControl(element.name)) {
+    //     return CreateCustomeControl(element, internalTab);
+    // }
     else if (element instanceof SymbolInstance && isLayout(element.name)) {
         return CreateLayout(element, internalTab);
     }
@@ -128,11 +134,11 @@ function getTabPosition(spaces) {
     return res;
 }
 
-function CreateCustomeControl(ele, tab) {
+function CreateComponent(ele, tab) {
     var cfk = window.localStorage.getItem("component_framework");
     if (cfk == "blazorise") return CreateBlazorise(ele);
 }
 
 module.exports = {
-    ConvertHTML: convert,
+    ConvertHTML: convert
 };
